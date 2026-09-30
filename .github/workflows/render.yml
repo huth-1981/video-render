@@ -1,0 +1,123 @@
+name: Render Video
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        required: true
+        type: string
+      video_urls:
+        required: true
+        type: string
+        description: "Comma-separated list of Pexels video URLs (1-5)"
+      title:
+        required: true
+        type: string
+      script:
+        required: true
+        type: string
+      caption:
+        required: true
+        type: string
+      page_id:
+        required: true
+        type: string
+      page_access_token:
+        required: true
+        type: string
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg python3-pip bc
+          pip install edge-tts
+
+      - name: Select voice and music
+        id: cfg
+        run: |
+          case "${{ github.event.inputs.channel }}" in
+            sao)  VOICE="vi-VN-NamMinhNeural"; MUSIC="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Dark%20Star.mp3" ;;
+            tham) VOICE="vi-VN-HoaiMyNeural";  MUSIC="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Disquiet.mp3" ;;
+            vn)   VOICE="vi-VN-HoaiMyNeural";  MUSIC="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Spring%20Thaw.mp3" ;;
+          esac
+          echo "voice=$VOICE" >> "$GITHUB_OUTPUT"
+          echo "music=$MUSIC" >> "$GITHUB_OUTPUT"
+
+      - name: Generate TTS voice
+        run: |
+          mkdir -p work
+          printf '%s' "${{ github.event.inputs.script }}" > work/script.txt
+          edge-tts --voice "${{ steps.cfg.outputs.voice }}" --file work/script.txt --write-media work/voice.mp3
+          ls -la work/
+
+      - name: Download videos
+        run: |
+          mkdir -p work/clips
+          IFS=',' read -ra URLS <<< "${{ github.event.inputs.video_urls }}"
+          i=0
+          for u in "${URLS[@]}"; do
+            u="$(echo -e "$u" | tr -d '[:space:]')"
+            [ -z "$u" ] && continue
+            curl -sL --retry 2 --max-time 120 -o "work/clips/clip_$i.mp4" "$u" || true
+            if [ -s "work/clips/clip_$i.mp4" ]; then
+              echo "clip_$i ok: $(du -h work/clips/clip_$i.mp4 | cut -f1)"
+              i=$((i+1))
+            else
+              rm -f "work/clips/clip_$i.mp4"
+            fi
+          done
+          COUNT=$(ls work/clips/clip_*.mp4 2>/dev/null | wc -l)
+          echo "downloaded=$COUNT"
+          if [ "$COUNT" -eq 0 ]; then echo "No videos downloaded"; exit 1; fi
+
+      - name: Download music
+        run: |
+          curl -sL --retry 2 --max-time 60 -o work/music.mp3 "${{ steps.cfg.outputs.music }}" || true
+          [ -s work/music.mp3 ] || ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -q:a 9 -acodec libmp3lame work/music.mp3
+
+      - name: Build video from multiple clips
+        run: |
+          set -e
+          VOICE_DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 work/voice.mp3)
+          TOTAL=$(echo "$VOICE_DUR + 1" | bc)
+          echo "voice duration: ${VOICE_DUR}s -> target ${TOTAL}s"
+
+          CLIPS=(work/clips/clip_*.mp4)
+          N=${#CLIPS[@]}
+          PER=$(echo "scale=2; $TOTAL / $N" | bc)
+          echo "clips: $N, each ${PER}s"
+
+          CONCAT_LIST=work/concat.txt
+          : > "$CONCAT_LIST"
+          IDX=0
+          for c in "${CLIPS[@]}"; do
+            DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$c")
+            SEEK=0
+            CMP=$(echo "$DUR > $PER + 2" | bc)
+            if [ "$CMP" -eq 1 ]; then
+              SEEK=$(echo "scale=2; ($DUR - $PER) / 2" | bc)
+            fi
+            ffmpeg -y -ss "$SEEK" -t "$PER" -i "$c" -vf "scale=720:1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2,fps=30" -an -c:v libx264 -preset veryfast -crf 23 "work/seg_$IDX.mp4"
+            echo "file 'seg_$IDX.mp4'" >> "$CONCAT_LIST"
+            IDX=$((IDX+1))
+          done
+
+          ffmpeg -y -f concat -safe 0 -i "$CONCAT_LIST" -c copy work/video_noaudio.mp4
+
+          ffmpeg -y -i work/video_noaudio.mp4 -i work/voice.mp3 -stream_loop -1 -i work/music.mp3 \
+            -filter_complex "[2:a]volume=0.18,atrim=duration=${TOTAL}[m];[1:a][m]amix=inputs=2:duration=first:dropout_transition=2[a]" \
+            -map 0:v -map "[a]" -t "$TOTAL" -c:v copy -c:a aac -b:a 128k work/final.mp4
+
+          ls -la work/final.mp4
+
+      - name: Upload video to Facebook Page
+        run: |
+          RESP=$(curl -s -X POST "https://graph.facebook.com/v19.0/${{ github.event.inputs.page_id }}/videos" \
+            -F "source=@work/final.mp4" \
+            -F "description=${{ github.event.inputs.caption }}" \
+            -F "access_token=${{ github.event.inputs.page_access_token }}")
+          echo "$RESP"
+          echo "$RESP" | grep -q '"id"' || exit 1
