@@ -1,0 +1,100 @@
+name: Render Video
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Channel: sao | tham | vn'
+        required: true
+        type: string
+      video_url:
+        description: 'Pexels video URL'
+        required: true
+        type: string
+      title:
+        description: 'Video title'
+        required: true
+        type: string
+      caption:
+        description: 'Facebook caption'
+        required: true
+        type: string
+      page_id:
+        description: 'Facebook Page ID'
+        required: true
+        type: string
+      page_token:
+        description: 'Facebook Page Access Token'
+        required: true
+        type: string
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    env:
+      CH: ${{ inputs.channel }}
+    steps:
+      - name: Download background music
+        run: |
+          mkdir -p assets
+          case "$CH" in
+            sao)  URL="https://archive.org/download/Kevin-MacLeod_Royalty-Free_2017_FullAlbum/Royalty%20Free%2FKevin%20MacLeod%20-%2000%20-%20Dark%20Star.mp3" ;;
+            tham) URL="https://archive.org/download/Kevin-MacLeod_Royalty-Free_2017_FullAlbum/Royalty%20Free%2FKevin%20MacLeod%20-%2000%20-%20Disquiet.mp3" ;;
+            vn)   URL="https://archive.org/download/Kevin-MacLeod_Royalty-Free_2017_FullAlbum/Royalty%20Free%2FKevin%20MacLeod%20-%2000%20-%20Spring%20Thaw.mp3" ;;
+          esac
+          curl -sL --max-time 300 -o assets/music.mp3 "$URL"
+          ls -la assets/
+
+      - name: Generate voice-over (OpenAI TTS)
+        run: |
+          node -e "
+          const fs=require('fs');
+          const caption=process.env.CAPTION;
+          const text=caption.split('\n').filter(l=>l.trim()&&!l.trim().startsWith('#')).join(' ').replace(/\s+/g,' ').slice(0,3800);
+          console.log('TTS text length:',text.length);
+          fetch('https://api.openai.com/v1/audio/speech',{
+            method:'POST',
+            headers:{'Authorization':'Bearer '+process.env.OAI,'Content-Type':'application/json'},
+            body:JSON.stringify({model:'tts-1',voice:'nova',input:text,response_format:'mp3'})
+          }).then(async r=>{if(!r.ok){throw new Error('TTS '+r.status+' '+await r.text())}return r.arrayBuffer()})
+          .then(b=>{fs.writeFileSync('assets/voice.mp3',Buffer.from(b));console.log('voice bytes:',b.byteLength)})
+          .catch(e=>{console.error(e.message);process.exit(1)});
+          "
+        env:
+          OAI: ${{ secrets.OPENAI_API_KEY }}
+          CAPTION: ${{ inputs.caption }}
+
+      - name: Download Pexels video
+        run: |
+          curl -sL --max-time 300 -o assets/source.mp4 "${{ inputs.video_url }}"
+          ls -la assets/
+
+      - name: Render final video with FFmpeg
+        run: |
+          node -e "
+          const {execSync}=require('child_process');
+          const fs=require('fs');
+          const probe=JSON.parse(execSync('ffprobe -v quiet -print_format json -show_format assets/voice.mp3').toString());
+          const dur=Math.ceil(parseFloat(probe.format.duration))+1;
+          console.log('voice duration:',dur,'s');
+          const filter='[1:a]aloop=loop=-1:size=2e9,volume=0.25,atrim=0:'+dur+'[bg];[2:a]volume=1.0[voice];[bg][voice]amix=inputs=2:duration=first:dropout_transition=2[aout]';
+          execSync('ffmpeg -y -loglevel error -stream_loop -1 -i assets/source.mp4 -i assets/music.mp3 -i assets/voice.mp3 -filter_complex \"'+filter+'\" -map 0:v -map \"[aout]\" -t '+dur+' -c:v libx264 -preset fast -crf 26 -pix_fmt yuv420p -c:a aac -b:a 128k -shortest assets/final.mp4',{stdio:'inherit'});
+          console.log('final size:',fs.statSync('assets/final.mp4').size);
+          "
+
+      - name: Upload video to Facebook Page
+        run: |
+          node -e "
+          const fs=require('fs');
+          const fd=new FormData();
+          fd.append('source',new Blob([fs.readFileSync('assets/final.mp4')],{type:'video/mp4'}),'video.mp4');
+          fd.append('description',process.env.CAPTION);
+          fd.append('access_token',process.env.FB);
+          fetch('https://graph.facebook.com/v19.0/'+process.env.PID+'/videos',{method:'POST',body:fd})
+          .then(r=>r.json())
+          .then(j=>{console.log('FB response:',JSON.stringify(j));if(j.error){process.exit(1)}})
+          .catch(e=>{console.error(e.message);process.exit(1)});
+          "
+        env:
+          FB: ${{ inputs.page_token }}
+          PID: ${{ inputs.page_id }}
+          CAPTION: ${{ inputs.caption }}
