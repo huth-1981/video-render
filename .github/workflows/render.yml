@@ -1,0 +1,114 @@
+name: Render Video
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Channel key: sao | tham | vn'
+        required: true
+        type: string
+      video_url:
+        description: 'Direct URL of the Pexels video file'
+        required: true
+        type: string
+      title:
+        description: 'Video title'
+        required: true
+        type: string
+      caption:
+        description: 'Facebook post caption/description'
+        required: true
+        type: string
+      script:
+        description: 'Narration script for TTS'
+        required: true
+        type: string
+      page_id:
+        description: 'Facebook Page ID'
+        required: true
+        type: string
+      page_access_token:
+        description: 'Facebook Page Access Token'
+        required: true
+        type: string
+
+env:
+  SAO_MUSIC_URL: https://incompetech.com/music/royalty-free/mp3-royaltyfree/Dark%20Star.mp3
+  THAM_MUSIC_URL: https://incompetech.com/music/royalty-free/mp3-royaltyfree/Disquiet.mp3
+  VN_MUSIC_URL: https://incompetech.com/music/royalty-free/mp3-royaltyfree/Spring%20Thaw.mp3
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set per-channel settings
+        id: cfg
+        run: |
+          case "${{ github.event.inputs.channel }}" in
+            sao)
+              echo "voice=vi-VN-HoaiMyNeural" >> "$GITHUB_OUTPUT"
+              echo "music_url=${{ env.SAO_MUSIC_URL }}" >> "$GITHUB_OUTPUT"
+              ;;
+            tham)
+              echo "voice=vi-VN-HoaiMyNeural" >> "$GITHUB_OUTPUT"
+              echo "music_url=${{ env.THAM_MUSIC_URL }}" >> "$GITHUB_OUTPUT"
+              ;;
+            vn)
+              echo "voice=vi-VN-HoaiMyNeural" >> "$GITHUB_OUTPUT"
+              echo "music_url=${{ env.VN_MUSIC_URL }}" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Unknown channel" >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg python3-pip
+          pip3 install --break-system-packages edge-tts
+
+      - name: Download video
+        run: |
+          curl -L -o video.mp4 "${{ github.event.inputs.video_url }}"
+
+      - name: Download music
+        run: |
+          curl -L -o music.mp3 "${{ steps.cfg.outputs.music_url }}" || touch music.mp3
+
+      - name: Generate TTS narration
+        run: |
+          cat > /tmp/gen_tts.py <<'PY'
+          import edge_tts, asyncio, os
+          text = os.environ["SCRIPT_TEXT"]
+          voice = os.environ["TTS_VOICE"]
+          async def main():
+              communicate = edge_tts.Communicate(text, voice, rate="+0%")
+              await communicate.save("voice.mp3")
+          asyncio.run(main())
+          PY
+          SCRIPT_TEXT="${{ github.event.inputs.script }}" TTS_VOICE="${{ steps.cfg.outputs.voice }}" python3 /tmp/gen_tts.py
+
+      - name: Merge voice + music + video
+        run: |
+          if [ -s music.mp3 ]; then
+            ffmpeg -y -i video.mp4 -i voice.mp3 -stream_loop -1 -i music.mp3 \
+              -filter_complex "[1:a]volume=1.0[v];[2:a]volume=0.18[m];[v][m]amix=inputs=2:duration=first:dropout_transition=2[a]" \
+              -map 0:v -map "[a]" -c:v copy -shortest final.mp4
+          else
+            ffmpeg -y -i video.mp4 -i voice.mp3 -map 0:v -map 1:a -c:v copy -shortest final.mp4
+          fi
+
+      - name: Upload video to Facebook
+        run: |
+          printf '%s\n\nMusic: Kevin MacLeod (incompetech.com), licensed CC BY 4.0' "${{ github.event.inputs.caption }}" > description.txt
+          curl -X POST "https://graph.facebook.com/v19.0/${{ github.event.inputs.page_id }}/videos" \
+            -F "source=@final.mp4" \
+            -F "description=<description.txt" \
+            -F "access_token=${{ github.event.inputs.page_access_token }}" \
+            -o fb_response.json
+          cat fb_response.json
+          if grep -q '"error"' fb_response.json; then
+            exit 1
+          fi
