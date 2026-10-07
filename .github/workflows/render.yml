@@ -1,10 +1,9 @@
 name: Render and Post Video
-
 on:
   workflow_dispatch:
     inputs:
       channel:
-        description: 'Chon kenh de dang'
+        description: 'Chon kenh'
         required: true
         type: choice
         options:
@@ -27,83 +26,46 @@ on:
         description: 'Tieu de video'
         required: true
         type: string
-
 jobs:
   render-and-post:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Python & FFmpeg
+      - uses: actions/checkout@v4
+      - name: Setup tools
         run: |
           sudo apt-get update && sudo apt-get install -y ffmpeg
           pip install edge-tts requests
-
-      - name: Get correct Page Token & ID
+      - name: Get Token & ID
         id: get_token
         run: |
           case "${{ inputs.channel }}" in
-            chuyen_tham_60s)
-              echo "page_token=${{ secrets.FB_TOKEN_CHUYEN_THAM_60S }}" >> $GITHUB_OUTPUT
-              echo "page_id=${{ vars.FB_PAGE_ID_CHUYEN_THAM_60S }}" >> $GITHUB_OUTPUT
-              ;;
-            sao_lai_the)
-              echo "page_token=${{ secrets.FB_TOKEN_SAO_LAI_THE }}" >> $GITHUB_OUTPUT
-              echo "page_id=${{ vars.FB_PAGE_ID_SAO_LAI_THE }}" >> $GITHUB_OUTPUT
-              ;;
-            viet_nam_nhin_tu_tren)
-              echo "page_token=${{ secrets.FB_TOKEN_VIET_NAM_NHIN_TU_TREN }}" >> $GITHUB_OUTPUT
-              echo "page_id=${{ vars.FB_PAGE_ID_VIET_NAM_NHIN_TU_TREN }}" >> $GITHUB_OUTPUT
-              ;;
-            song_khoe_sau_50)
-              echo "page_token=${{ secrets.FB_TOKEN_SONG_KHOE_SAU_50 }}" >> $GITHUB_OUTPUT
-              echo "page_id=${{ vars.FB_PAGE_ID_SONG_KHOE_SAU_50 }}" >> $GITHUB_OUTPUT
-              ;;
-            the_gioi_hoang_da_60s)
-              echo "page_token=${{ secrets.FB_TOKEN_THE_GIOI_HOANG_DA_60S }}" >> $GITHUB_OUTPUT
-              echo "page_id=${{ vars.FB_PAGE_ID_THE_GIOI_HOANG_DA_60S }}" >> $GITHUB_OUTPUT
-              ;;
-            loi_phat_day_1_phut)
-              echo "page_token=${{ secrets.FB_TOKEN_LOI_PHAT_DAY_1_PHUT }}" >> $GITHUB_OUTPUT
-              echo "page_id=${{ vars.FB_PAGE_ID_LOI_PHAT_DAY_1_PHUT }}" >> $GITHUB_OUTPUT
-              ;;
-            tien_trong_tui)
-              echo "page_token=${{ secrets.FB_TOKEN_TIEN_TRONG_TUI }}" >> $GITHUB_OUTPUT
-              echo "page_id=${{ vars.FB_PAGE_ID_TIEN_TRONG_TUI }}" >> $GITHUB_OUTPUT
-              ;;
+            chuyen_tham_60s) echo "page_token=${{ secrets.FB_TOKEN_CHUYEN_THAM_60S }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_CHUYEN_THAM_60S }}" >> $GITHUB_OUTPUT ;;
+            sao_lai_the) echo "page_token=${{ secrets.FB_TOKEN_SAO_LAI_THE }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_SAO_LAI_THE }}" >> $GITHUB_OUTPUT ;;
+            viet_nam_nhin_tu_tren) echo "page_token=${{ secrets.FB_TOKEN_VIET_NAM_NHIN_TU_TREN }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_VIET_NAM_NHIN_TU_TREN }}" >> $GITHUB_OUTPUT ;;
+            song_khoe_sau_50) echo "page_token=${{ secrets.FB_TOKEN_SONG_KHOE_SAU_50 }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_SONG_KHOE_SAU_50 }}" >> $GITHUB_OUTPUT ;;
+            the_gioi_hoang_da_60s) echo "page_token=${{ secrets.FB_TOKEN_THE_GIOI_HOANG_DA_60S }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_THE_GIOI_HOANG_DA_60S }}" >> $GITHUB_OUTPUT ;;
+            loi_phat_day_1_phut) echo "page_token=${{ secrets.FB_TOKEN_LOI_PHAT_DAY_1_PHUT }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_LOI_PHAT_DAY_1_PHUT }}" >> $GITHUB_OUTPUT ;;
+            tien_trong_tui) echo "page_token=${{ secrets.FB_TOKEN_TIEN_TRONG_TUI }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_TIEN_TRONG_TUI }}" >> $GITHUB_OUTPUT ;;
           esac
-
-      - name: Render video that
+      - name: Render video
         run: |
           echo '${{ inputs.script }}' > script.txt
-          echo "Tao giong doc..."
           edge-tts --voice vi-VN-HoaiMyNeural --text "$(cat script.txt)" --write-media voice.mp3
-          
-          echo "Tai video Pexels..."
           curl -L -o bg.mp4 "${{ inputs.video_url }}"
-          
-          echo "Ghep video + audio + tieu de..."
-          ffmpeg -y -stream_loop 3 -i bg.mp4 -i voice.mp3 -shortest -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,drawtext=text='${{ inputs.title }}':fontcolor=white:fontsize=60:box=1:boxcolor=black@0.5:boxborderw=10:x=(w-text_w)/2:y=150" -c:a aac -c:v libx264 -pix_fmt yuv420p final.mp4
-
-      - name: Post to Facebook Page
+          ffmpeg -y -stream_loop 2 -i bg.mp4 -i voice.mp3 -shortest -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920" -c:a aac -c:v libx264 -pix_fmt yuv420p final.mp4
+      - name: Post to Facebook
         env:
           PAGE_TOKEN: ${{ steps.get_token.outputs.page_token }}
           PAGE_ID: ${{ steps.get_token.outputs.page_id }}
         run: |
-          echo "Dang video len Page ID $PAGE_ID ..."
           python3 << 'PY'
           import requests, os
-          page_id = os.environ['PAGE_ID']
-          token = os.environ['PAGE_TOKEN']
-          title = """${{ inputs.title }}"""
-          script = """${{ inputs.script }}"""
-          desc = f"{title}\n\n{script}\n\n#chuyentham #60s"
-          
-          url = f"https://graph.facebook.com/v19.0/{page_id}/videos"
+          page_id=os.environ['PAGE_ID']; token=os.environ['PAGE_TOKEN']
+          title="""${{ inputs.title }}"""
+          script="""${{ inputs.script }}"""
+          desc=f"{title}\n\n{script}"
+          url=f"https://graph.facebook.com/v19.0/{page_id}/videos"
           with open('final.mp4','rb') as f:
-              r = requests.post(url, data={'description': desc, 'access_token': token}, files={'source': f})
+              r=requests.post(url, data={'description':desc,'access_token':token}, files={'source':f})
           print(r.text)
-          if r.status_code != 200:
-              exit(1)
           PY
