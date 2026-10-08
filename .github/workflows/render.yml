@@ -52,32 +52,119 @@ jobs:
           PAGE_ID: ${{ steps.get_token.outputs.page_id }}
         run: |
           python3 << 'PY'
-          import requests, os, time
-          pid=os.environ['PAGE_ID']
-          token=os.environ['PAGE_TOKEN']
-          title="""${{ inputs.title }}"""
-          script="""${{ inputs.script }}"""
-          desc=f"{title}\n\n{script}\n\n#chuyentham60s"
+          import requests, os, time, sys
 
-          print(f"Dang video len Page {pid}: {title}")
-          url=f"https://graph.facebook.com/v19.0/{pid}/videos"
-          
-          with open('final.mp4','rb') as f:
-              r=requests.post(url, data={
-                  'title': title,
-                  'description': desc,
-                  'access_token': token,
-                  'published': 'true'
-              }, files={'source': f})
-          
+          pid = os.environ.get("PAGE_ID", "").strip()
+          token = os.environ.get("PAGE_TOKEN", "").strip()
+          title = """${{ inputs.title }}"""
+          script = """${{ inputs.script }}"""
+          desc = f"{title}\n\n{script}\n\n#chuyentham60s"
+
+          if not pid:
+              raise RuntimeError("THIEU FB_PAGE_ID cho kenh nay.")
+          if not token:
+              raise RuntimeError("THIEU FB_TOKEN cho kenh nay.")
+
+          API = "https://graph.facebook.com/v19.0"
+          upload_url = f"{API}/{pid}/videos"
+
+          print(f"Dang video len Facebook Page {pid}: {title}")
+          print("Bat buoc published=true va se kiem tra den khi video thuc su public.")
+
+          # 1) Upload video va yeu cau publish cong khai.
+          with open("final.mp4", "rb") as f:
+              r = requests.post(
+                  upload_url,
+                  data={
+                      "title": title,
+                      "description": desc,
+                      "access_token": token,
+                      "published": "true",
+                  },
+                  files={"source": ("final.mp4", f, "video/mp4")},
+                  timeout=1800,
+              )
+
+          print(f"Facebook upload HTTP {r.status_code}")
           print(r.text)
-          data=r.json()
-          if 'id' in data:
-              vid=data['id']
-              print(f"Thanh cong! Video ID: {vid}")
-              time.sleep(5)
-              check=requests.get(f"https://graph.facebook.com/v19.0/{vid}?fields=status,published&access_token={token}")
-              print(f"Trang thai: {check.text}")
-          else:
-              print("LOI DANG VIDEO!")
+
+          try:
+              data = r.json()
+          except ValueError:
+              raise RuntimeError("Facebook tra ve khong phai JSON.")
+
+          if r.status_code >= 400:
+              raise RuntimeError(f"Facebook upload FAILED: {data}")
+
+          if "error" in data:
+              raise RuntimeError(f"Facebook upload FAILED: {data['error']}")
+
+          vid = data.get("id")
+          if not vid:
+              raise RuntimeError(f"Khong nhan duoc Video ID tu Facebook: {data}")
+
+          print(f"Facebook da nhan video ID: {vid}")
+
+          # 2) Polling trang thai thay vi chi cho 5 giay.
+          #    Xac nhan video da duoc xu ly va published=true.
+          check_url = f"{API}/{vid}"
+          max_attempts = 24
+          wait_seconds = 10
+          last_data = None
+
+          for attempt in range(1, max_attempts + 1):
+              time.sleep(wait_seconds)
+
+              check = requests.get(
+                  check_url,
+                  params={
+                      "fields": "id,status,published,permalink_url",
+                      "access_token": token,
+                  },
+                  timeout=60,
+              )
+
+              print(f"Check {attempt}/{max_attempts} - HTTP {check.status_code}")
+              print(check.text)
+
+              if check.status_code >= 400:
+                  last_data = {"http_status": check.status_code, "body": check.text}
+                  continue
+
+              try:
+                  check_data = check.json()
+              except ValueError:
+                  last_data = {"body": check.text}
+                  continue
+
+              last_data = check_data
+
+              if "error" in check_data:
+                  continue
+
+              published = check_data.get("published")
+              status = check_data.get("status")
+
+              if isinstance(status, dict):
+                  video_status = (
+                      status.get("video_status")
+                      or status.get("processing_phase")
+                      or status.get("status")
+                      or str(status)
+                  )
+              else:
+                  video_status = status
+
+              print(f"Video status={video_status}; published={published}")
+
+              if published is True:
+                  print("OK: VIDEO DA DUOC PUBLISH CONG KHAI.")
+                  if check_data.get("permalink_url"):
+                      print(f"URL: {check_data['permalink_url']}")
+                  sys.exit(0)
+
+          raise RuntimeError(
+              "VIDEO KHONG XAC NHAN DUOC LA CONG KHAI SAU THOI GIAN CHO. "
+              f"Video ID={vid}; last_response={last_data}"
+          )
           PY
