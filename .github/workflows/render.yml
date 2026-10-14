@@ -1,4 +1,5 @@
 name: Render and Post Video
+
 on:
   workflow_dispatch:
     inputs:
@@ -7,16 +8,68 @@ on:
         required: true
         type: choice
         options: [chuyen_tham_60s, sao_lai_the, viet_nam_nhin_tu_tren, song_khoe_sau_50, the_gioi_hoang_da_60s, loi_phat_day_1_phut, tien_trong_tui, thanh_lam_3d_studio, ha_thu_cartoon_studio, da_thuy_3d_studio]
-      script: { description: 'Noi dung kich ban', required: true, type: string }
-      video_url: { description: '1 hoac nhieu link Pexels cach nhau dau phay ,', required: true, type: string }
-      title: { description: 'Tieu de video', required: true, type: string }
+      mode:
+        description: 'Che do render: video = nhu cu, image_card = anh EN/VI/IPA'
+        required: false
+        default: 'video'
+        type: choice
+        options: [video, image_card]
+      script:
+        description: 'Noi dung kich ban'
+        required: true
+        type: string
+      video_url:
+        description: '1 hoac nhieu link Pexels cach nhau dau phay ,'
+        required: false
+        type: string
+      title:
+        description: 'Tieu de video'
+        required: true
+        type: string
+      # --- CAC FIELD MOI DE HET LOI 422 + RENDER ANH ---
+      content_vi:
+        description: 'Noi dung tieng Viet'
+        required: false
+        type: string
+      content_en:
+        description: 'Noi dung tieng Anh'
+        required: false
+        type: string
+      ipa:
+        description: 'Phien am IPA'
+        required: false
+        type: string
+      vocab:
+        description: 'Tu vung'
+        required: false
+        type: string
+      hook:
+        description: 'Hook'
+        required: false
+        type: string
+      fb_formatted:
+        description: 'Noi dung FB da format'
+        required: false
+        type: string
+      video_order:
+        description: 'Thu tu video'
+        required: false
+        type: string
+      scheduled_at:
+        description: 'Thoi gian du kien'
+        required: false
+        type: string
+      story_id:
+        description: 'Story ID'
+        required: false
+        type: string
 
 jobs:
   render-and-post:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt-get update && sudo apt-get install -y ffmpeg && pip install edge-tts requests
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core && pip install edge-tts requests Pillow
 
       - id: get_token
         run: |
@@ -33,7 +86,9 @@ jobs:
             da_thuy_3d_studio) echo "page_token=${{ secrets.FB_PAGE_TOKEN_DA_THUY_3D_STUDIO }}" >> $GITHUB_OUTPUT; echo "page_id=${{ secrets.FB_PAGE_ID_DA_THUY_3D_STUDIO }}" >> $GITHUB_OUTPUT ;;
           esac
 
+      # ===== NHANH 1: RENDER VIDEO (NHU CU) =====
       - name: Render - Ghep 3 video & khong cat tieng
+        if: ${{ inputs.mode == 'video' || inputs.mode == '' }}
         run: |
           echo '${{ inputs.script }}' > script.txt
           edge-tts --voice vi-VN-HoaiMyNeural --text "$(cat script.txt)" --write-media voice.mp3
@@ -51,113 +106,189 @@ jobs:
           
           ffmpeg -y -f concat -safe 0 -i list.txt -c copy bg_concat.mp4
           ffmpeg -y -stream_loop 10 -i bg_concat.mp4 -i voice.mp3 -shortest -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920" -c:a aac -c:v libx264 -pix_fmt yuv420p -max_muxing_queue_size 1024 final.mp4
-          
+
+      # ===== NHANH 2: RENDER ANH FLASHCARD EN/VI/IPA =====
+      - name: Render - Anh Flashcard EN/VI/IPA
+        if: ${{ inputs.mode == 'image_card' }}
+        env:
+          TITLE: ${{ inputs.title }}
+          SCRIPT: ${{ inputs.script }}
+          CONTENT_EN: ${{ inputs.content_en }}
+          CONTENT_VI: ${{ inputs.content_vi }}
+          IPA: ${{ inputs.ipa }}
+          VOCAB: ${{ inputs.vocab }}
+          HOOK: ${{ inputs.hook }}
+          VIDEO_URL: ${{ inputs.video_url }}
+        run: |
+          python3 << 'PY'
+          from PIL import Image, ImageDraw, ImageFont
+          import os, textwrap, requests
+
+          W, H = 1080, 1920
+          TITLE = os.getenv("TITLE","")
+          EN = os.getenv("CONTENT_EN","") or os.getenv("SCRIPT","")
+          VI = os.getenv("CONTENT_VI","")
+          IPA = os.getenv("IPA","")
+          VOCAB = os.getenv("VOCAB","")
+          HOOK = os.getenv("HOOK","")
+          VIDEO_URL = os.getenv("VIDEO_URL","")
+
+          def get_font(size, bold=False):
+              p = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+              try: return ImageFont.truetype(p, size)
+              except: return ImageFont.load_default()
+
+          # Background
+          img = Image.new("RGB", (W,H), (15,23,42))
+          draw = ImageDraw.Draw(img)
+
+          # Try download first Pexels video poster as background (fallback solid)
+          bg_path = None
+          try:
+              if VIDEO_URL:
+                  first_url = VIDEO_URL.split(",")[0].strip()
+                  if first_url.startswith("http"):
+                      # Download small thumb if possible, else keep solid
+                      # Pexels video link is mp4, we can't thumb, so use color
+                      pass
+          except: pass
+
+          # Top area
+          draw.rectangle([0,0,W,950], fill=(30,41,59))
+          # Decor
+          draw.ellipse([-100,-100,400,400], fill=(56,189,248,30))
+          draw.ellipse([700,100,1200,600], fill=(168,85,247,30))
+
+          # Card
+          draw.rounded_rectangle([40, 900, W-40, H-40], radius=32, fill=(255,255,255))
+
+          y=940
+          def wrapped(text, y, font, color, left=80, max_w=920):
+              if not text: return y
+              lines = textwrap.wrap(text, width=38)
+              for line in lines:
+                  draw.text((left, y), line, font=font, fill=color)
+                  y+= font.size + 14
+                  if y> H-120: break
+              return y
+
+          fb_b = get_font(44, True)
+          fb_m = get_font(36)
+          fb_s = get_font(30)
+
+          if TITLE:
+              y = wrapped(f"{TITLE}", y, fb_b, (15,23,42))
+              y+=12
+              draw.line([(80,y),(W-80,y)], fill=(226,232,240), width=2)
+              y+=24
+
+          if EN:
+              y = wrapped(f"🇺🇸 EN: {EN}", y, fb_b, (15,23,42))
+              y+=16
+          if VI:
+              y = wrapped(f"🇻🇳 VI: {VI}", y, fb_m, (51,65,85))
+              y+=16
+          if IPA:
+              y = wrapped(f"🔊 IPA: {IPA}", y, fb_s, (100,116,139))
+              y+=16
+          if VOCAB:
+              y = wrapped(f"📚 Vocab: {VOCAB}", y, fb_s, (14,165,233))
+              y+=16
+          if HOOK:
+              y+=10
+              draw.line([(80,y),(W-80,y)], fill=(226,232,240), width=2)
+              y+=20
+              y = wrapped(HOOK, y, fb_s, (100,116,139))
+
+          os.makedirs("output", exist_ok=True)
+          img.save("output/card.jpg", quality=95)
+          # also copy as final.jpg for upload compat
+          img.save("final.jpg", quality=95)
+          print("Saved final.jpg / output/card.jpg")
+          PY
+
       - name: Post - Cong khai cho moi nguoi xem
         env:
           PAGE_TOKEN: ${{ steps.get_token.outputs.page_token }}
           PAGE_ID: ${{ steps.get_token.outputs.page_id }}
+          MODE: ${{ inputs.mode }}
         run: |
           python3 << 'PY'
           import requests, os, time, sys
 
           pid = os.environ.get("PAGE_ID", "").strip()
           token = os.environ.get("PAGE_TOKEN", "").strip()
+          mode = os.environ.get("MODE","video") or "video"
           title = """${{ inputs.title }}"""
           script = """${{ inputs.script }}"""
-          desc = f"{title}\n\n{script}\n\n#chuyentham60s"
+          content_en = """${{ inputs.content_en }}"""
+          content_vi = """${{ inputs.content_vi }}"""
+          ipa = """${{ inputs.ipa }}"""
+          vocab = """${{ inputs.vocab }}"""
+          hook = """${{ inputs.hook }}"""
+          fb_formatted = """${{ inputs.fb_formatted }}"""
 
-          if not pid:
-              raise RuntimeError("THIEU FB_PAGE_ID cho kenh nay.")
-          if not token:
-              raise RuntimeError("THIEU FB_TOKEN cho kenh nay.")
+          if fb_formatted and fb_formatted.strip() and fb_formatted != "null":
+              desc = fb_formatted
+          else:
+              desc = f"{title}\n\n"
+              if content_en: desc+= f"EN: {content_en}\n"
+              if content_vi: desc+= f"VI: {content_vi}\n"
+              if ipa: desc+= f"IPA: {ipa}\n"
+              if vocab: desc+= f"Vocab: {vocab}\n"
+              if hook: desc+= f"\n{hook}\n"
+              if not content_en and script: desc+= f"\n{script}\n"
+              desc+= "\n#SuTuEN #LearnEnglish"
+
+          if not pid: raise RuntimeError("THIEU FB_PAGE_ID")
+          if not token: raise RuntimeError("THIEU FB_TOKEN")
 
           API = "https://graph.facebook.com/v19.0"
+
+          # IMAGE CARD MODE
+          if mode == "image_card":
+              upload_url = f"{API}/{pid}/photos"
+              print(f"Dang ANH len Page {pid}: {title}")
+              with open("final.jpg", "rb") as f:
+                  r = requests.post(
+                      upload_url,
+                      data={"caption": desc, "access_token": token, "published": "true"},
+                      files={"source": ("final.jpg", f, "image/jpeg")},
+                      timeout=600,
+                  )
+              print(f"FB Photo HTTP {r.status_code}\n{r.text}")
+              data = r.json()
+              if r.status_code >=400 or "error" in data:
+                  raise RuntimeError(f"Facebook Photo upload FAILED: {data}")
+              print(f"OK PHOTO ID: {data.get('id')} - {data.get('post_id')}")
+              sys.exit(0)
+
+          # VIDEO MODE (cu)
           upload_url = f"{API}/{pid}/videos"
-
-          print(f"Dang video len Facebook Page {pid}: {title}")
-          print("Bat buoc published=true va se kiem tra den khi video thuc su public.")
-
+          print(f"Dang video len Page {pid}: {title}")
           with open("final.mp4", "rb") as f:
               r = requests.post(
                   upload_url,
-                  data={
-                      "title": title,
-                      "description": desc,
-                      "access_token": token,
-                      "published": "true",
-                  },
+                  data={"title": title, "description": desc, "access_token": token, "published": "true"},
                   files={"source": ("final.mp4", f, "video/mp4")},
                   timeout=1800,
               )
-
-          print(f"Facebook upload HTTP {r.status_code}")
-          print(r.text)
-
-          try:
-              data = r.json()
-          except ValueError:
-              raise RuntimeError("Facebook tra ve khong phai JSON.")
-
-          if r.status_code >= 400:
-              raise RuntimeError(f"Facebook upload FAILED: {data}")
-
-          if "error" in data:
-              raise RuntimeError(f"Facebook upload FAILED: {data['error']}")
-
+          print(f"Facebook upload HTTP {r.status_code}\n{r.text}")
+          try: data = r.json()
+          except: raise RuntimeError("Facebook tra ve khong phai JSON.")
+          if r.status_code >=400 or "error" in data: raise RuntimeError(f"Facebook upload FAILED: {data}")
           vid = data.get("id")
-          if not vid:
-              raise RuntimeError(f"Khong nhan duoc Video ID tu Facebook: {data}")
-
+          if not vid: raise RuntimeError(f"Khong nhan duoc Video ID: {data}")
           print(f"Facebook da nhan video ID: {vid}")
-
           check_url = f"{API}/{vid}"
-          max_attempts = 24
-          wait_seconds = 10
-          last_data = None
-
-          for attempt in range(1, max_attempts + 1):
-              time.sleep(wait_seconds)
-              check = requests.get(
-                  check_url,
-                  params={
-                      "fields": "id,status,published,permalink_url",
-                      "access_token": token,
-                  },
-                  timeout=60,
-              )
-              print(f"Check {attempt}/{max_attempts} - HTTP {check.status_code}")
-              print(check.text)
-              if check.status_code >= 400:
-                  last_data = {"http_status": check.status_code, "body": check.text}
-                  continue
-              try:
-                  check_data = check.json()
-              except ValueError:
-                  last_data = {"body": check.text}
-                  continue
-              last_data = check_data
-              if "error" in check_data:
-                  continue
-              published = check_data.get("published")
-              status = check_data.get("status")
-              if isinstance(status, dict):
-                  video_status = (
-                      status.get("video_status")
-                      or status.get("processing_phase")
-                      or status.get("status")
-                      or str(status)
-                  )
-              else:
-                  video_status = status
-              print(f"Video status={video_status}; published={published}")
-              if published is True:
-                  print("OK: VIDEO DA DUOC PUBLISH CONG KHAI.")
-                  if check_data.get("permalink_url"):
-                      print(f"URL: {check_data['permalink_url']}")
+          for attempt in range(1,25):
+              time.sleep(10)
+              check = requests.get(check_url, params={"fields":"id,status,published,permalink_url","access_token":token}, timeout=60)
+              print(f"Check {attempt} - {check.text}")
+              try: cd = check.json()
+              except: continue
+              if cd.get("published") is True:
+                  print(f"OK VIDEO PUBLIC: {cd.get('permalink_url')}")
                   sys.exit(0)
-
-          raise RuntimeError(
-              "VIDEO KHONG XAC NHAN DUOC LA CONG KHAI SAU THOI GIAN CHO. "
-              f"Video ID={vid}; last_response={last_data}"
-          )
+          raise RuntimeError(f"VIDEO KHONG PUBLIC sau cho - ID={vid}")
           PY
