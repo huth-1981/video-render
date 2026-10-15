@@ -1,0 +1,146 @@
+name: Render 3D Studio - Tep and Rubi
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Chon kenh 3D'
+        required: true
+        type: choice
+        options: [thanh_lam_3d_studio, ha_thu_cartoon_studio, da_thuy_3d_studio]
+      mode:
+        description: 'Che do render'
+        required: false
+        default: 'image_card'
+        type: choice
+        options: [video, image_card]
+      title:
+        description: 'Tieu de'
+        required: true
+        type: string
+      content_en:
+        required: false
+        type: string
+      content_vi:
+        required: false
+        type: string
+      ipa:
+        required: false
+        type: string
+      vocab:
+        required: false
+        type: string
+      fb_formatted:
+        required: false
+        type: string
+      video_url:
+        required: false
+        type: string
+      script:
+        required: false
+        type: string
+
+jobs:
+  render-and-post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core && pip install requests Pillow
+
+      - id: get_token
+        run: |
+          echo "=== CHANNEL: ${{ inputs.channel }} ==="
+          case "${{ inputs.channel }}" in
+            thanh_lam_3d_studio)
+              TOKEN="${{ secrets.FB_PAGE_TOKEN_THANH_LAM_3D_STUDIO }}"
+              PID="${{ secrets.FB_PAGE_ID_THANH_LAM_3D_STUDIO }}"
+              ;;
+            ha_thu_cartoon_studio)
+              TOKEN="${{ secrets.FB_PAGE_TOKEN_HA_THU_CARTOON_STUDIO }}"
+              PID="${{ secrets.FB_PAGE_ID_HA_THU_CARTOON_STUDIO }}"
+              ;;
+            da_thuy_3d_studio)
+              TOKEN="${{ secrets.FB_PAGE_TOKEN_DA_THUY_3D_STUDIO }}"
+              PID="${{ secrets.FB_PAGE_ID_DA_THUY_3D_STUDIO }}"
+              ;;
+          esac
+          if [ -z "$PID" ]; then echo "ERROR PID empty"; exit 1; fi
+          if [ -z "$TOKEN" ]; then echo "ERROR TOKEN empty"; exit 1; fi
+          echo "page_id=$PID" >> $GITHUB_OUTPUT
+          echo "page_token=$TOKEN" >> $GITHUB_OUTPUT
+          echo "OK -> PageID ${PID:0:6}****"
+
+      - name: Render Anh Flashcard Tep & Rubi
+        if: ${{ inputs.mode == 'image_card' }}
+        run: |
+          python3 << 'PY'
+          from PIL import Image, ImageDraw, ImageFont
+          import os, textwrap
+          W, H = 1080, 1920
+          TITLE = """${{ inputs.title }}""".strip()
+          EN = """${{ inputs.content_en }}""".strip()
+          VI = """${{ inputs.content_vi }}""".strip()
+          IPA_RAW = """${{ inputs.ipa }}""".strip()
+          VOCAB = """${{ inputs.vocab }}""".strip()
+          IPA = IPA_RAW.replace("//","").strip("/").replace("undefined","").strip()
+          IPA_DISPLAY = f"/{IPA}/" if IPA else ""
+          if not VOCAB or VOCAB.lower() in ["undefined","null"]:
+              VOCAB = "LearnEnglish"
+          def get_font(size, bold=False):
+              p = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+              try: return ImageFont.truetype(p, size)
+              except: return ImageFont.load_default()
+          img = Image.new("RGB", (W,H), (15,23,42))
+          draw = ImageDraw.Draw(img)
+          draw.rectangle([0,0,W,900], fill=(30,41,59))
+          draw.rounded_rectangle([36, 820, W-36, H-36], radius=28, fill=(255,255,255))
+          y=860
+          def wrapped(text, y, font, color, left=70, right=1010):
+              if not text: return y
+              lines = textwrap.wrap(text, width=36 if font.size>=40 else 42)
+              for line in lines:
+                  draw.text((left, y), line, font=font, fill=color)
+                  y+= font.size + 12
+                  if y> H-100: break
+              return y
+          fb_title = get_font(44, True); fb_en = get_font(40, True); fb_vi = get_font(36, False); fb_ipa = get_font(36, False); fb_small = get_font(30, False); fb_vocab = get_font(34, True)
+          if TITLE:
+              y = wrapped(TITLE, y, fb_title, (15,23,42)); y+=10; draw.line([(70,y),(W-70,y)], fill=(226,232,240), width=2); y+=18
+          if EN:
+              y = wrapped(f"EN: {EN}", y, fb_en, (15,23,42)); y+=14
+          if VI:
+              y = wrapped(f"VI: {VI}", y, fb_vi, (51,65,85)); y+=14
+          if IPA_DISPLAY:
+              draw.rounded_rectangle([60, y-6, 1020, y+fb_ipa.size+18], radius=10, fill=(241,245,249))
+              y = wrapped(f"IPA: {IPA_DISPLAY}", y, fb_ipa, (14,165,233)); y+=14
+          if VOCAB:
+              y+=8; draw.line([(70,y),(W-70,y)], fill=(226,232,240), width=2); y+=16; y = wrapped(f"Vocab: {VOCAB}", y, fb_vocab, (124,58,237))
+          draw.text((70, H-70), "#TepAndRubi #AnimalFriends #LearnEnglish", font=fb_small, fill=(100,116,139))
+          import os; os.makedirs("output", exist_ok=True); img.save("output/card.jpg", quality=95); img.save("final.jpg", quality=95)
+          print(f"Saved final.jpg EN={EN} VI={VI} IPA={IPA_DISPLAY}")
+          PY
+
+      - name: Post Facebook
+        env:
+          PAGE_TOKEN: ${{ steps.get_token.outputs.page_token }}
+          PAGE_ID: ${{ steps.get_token.outputs.page_id }}
+        run: |
+          python3 << 'PY'
+          import requests, os
+          pid=os.environ.get("PAGE_ID","").strip()
+          token=os.environ.get("PAGE_TOKEN","").strip()
+          fb_formatted="""${{ inputs.fb_formatted }}"""
+          print(f"Posting to PID {pid[:6]}****")
+          print(f"Caption: {fb_formatted[:300]}")
+          if not pid or not token:
+              raise RuntimeError("Missing ID/TOKEN")
+          API="https://graph.facebook.com/v19.0"
+          url=f"{API}/{pid}/photos"
+          with open("final.jpg","rb") as f:
+              r=requests.post(url, data={"caption":fb_formatted,"access_token":token,"published":"true"}, files={"source":("final.jpg",f,"image/jpeg")}, timeout=600)
+          print(r.text)
+          j=r.json()
+          if r.status_code>=400 or "error" in j:
+              raise RuntimeError(f"Failed {j}")
+          print(f"OK Posted {j.get('id')}")
+          PY
