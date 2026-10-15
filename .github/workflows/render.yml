@@ -1,4 +1,4 @@
-name: Render and Post Video
+name: Render and Post Video - FIXED NO CROSS POST
 
 on:
   workflow_dispatch:
@@ -9,7 +9,6 @@ on:
         type: choice
         options: [chuyen_tham_60s, sao_lai_the, viet_nam_nhin_tu_tren, song_khoe_sau_50, the_gioi_hoang_da_60s, loi_phat_day_1_phut, tien_trong_tui, thanh_lam_3d_studio, ha_thu_cartoon_studio, da_thuy_3d_studio]
       mode:
-        description: 'Che do render'
         required: false
         default: 'video'
         type: choice
@@ -41,15 +40,6 @@ on:
       fb_formatted:
         required: false
         type: string
-      video_order:
-        required: false
-        type: string
-      scheduled_at:
-        required: false
-        type: string
-      story_id:
-        required: false
-        type: string
 
 jobs:
   render-and-post:
@@ -60,212 +50,132 @@ jobs:
 
       - id: get_token
         run: |
+          echo "=== CHANNEL: ${{ inputs.channel }} ==="
           case "${{ inputs.channel }}" in
-            chuyen_tham_60s) echo "page_token=${{ secrets.FB_TOKEN_CHUYEN_THAM_60S }}" >> $GITHUB_OUTPUT; PID="${{ secrets.FB_PAGE_ID_CHUYEN_THAM_60S }}${{ vars.FB_PAGE_ID_CHUYEN_THAM_60S }}"; echo "page_id=$PID" >> $GITHUB_OUTPUT ;;
-            sao_lai_the) echo "page_token=${{ secrets.FB_TOKEN_SAO_LAI_THE }}" >> $GITHUB_OUTPUT; PID="${{ secrets.FB_PAGE_ID_SAO_LAI_THE }}${{ vars.FB_PAGE_ID_SAO_LAI_THE }}"; echo "page_id=$PID" >> $GITHUB_OUTPUT ;;
-            viet_nam_nhin_tu_tren) echo "page_token=${{ secrets.FB_TOKEN_VIET_NAM_NHIN_TU_TREN }}" >> $GITHUB_OUTPUT; PID="${{ secrets.FB_PAGE_ID_VIET_NAM_NHIN_TU_TREN }}${{ vars.FB_PAGE_ID_VIET_NAM_NHIN_TU_TREN }}"; echo "page_id=$PID" >> $GITHUB_OUTPUT ;;
-            song_khoe_sau_50) echo "page_token=${{ secrets.FB_TOKEN_SONG_KHOE_SAU_50 }}" >> $GITHUB_OUTPUT; PID="${{ secrets.FB_PAGE_ID_SONG_KHOE_SAU_50 }}${{ vars.FB_PAGE_ID_SONG_KHOE_SAU_50 }}"; echo "page_id=$PID" >> $GITHUB_OUTPUT ;;
-            the_gioi_hoang_da_60s) echo "page_token=${{ secrets.FB_TOKEN_THE_GIOI_HOANG_DA_60S }}" >> $GITHUB_OUTPUT; PID="${{ secrets.FB_PAGE_ID_THE_GIOI_HOANG_DA_60S }}${{ vars.FB_PAGE_ID_THE_GIOI_HOANG_DA_60S }}"; echo "page_id=$PID" >> $GITHUB_OUTPUT ;;
-            loi_phat_day_1_phut) echo "page_token=${{ secrets.FB_TOKEN_LOI_PHAT_DAY_1_PHUT }}" >> $GITHUB_OUTPUT; PID="${{ secrets.FB_PAGE_ID_LOI_PHAT_DAY_1_PHUT }}${{ vars.FB_PAGE_ID_LOI_PHAT_DAY_1_PHUT }}"; echo "page_id=$PID" >> $GITHUB_OUTPUT ;;
-            tien_trong_tui) echo "page_token=${{ secrets.FB_TOKEN_TIEN_TRONG_TUI }}" >> $GITHUB_OUTPUT; PID="${{ secrets.FB_PAGE_ID_TIEN_TRONG_TUI }}${{ vars.FB_PAGE_ID_TIEN_TRONG_TUI }}"; echo "page_id=$PID" >> $GITHUB_OUTPUT ;;
-            thanh_lam_3d_studio) TOKEN="${{ secrets.FB_PAGE_TOKEN_THANH_LAM_3D_STUDIO }}${{ secrets.FB_TOKEN_THANH_LAM_3D_STUDIO }}${{ secrets.FB_TOKEN_THANH_LAM }}"; PID="${{ secrets.FB_PAGE_ID_THANH_LAM_3D_STUDIO }}${{ vars.FB_PAGE_ID_THANH_LAM_3D_STUDIO }}${{ secrets.FB_PAGE_ID_THANH_LAM }}${{ vars.FB_PAGE_ID_THANH_LAM }}"; echo "page_token=$TOKEN" >> $GITHUB_OUTPUT; echo "page_id=$PID" >> $GITHUB_OUTPUT ;;
-            ha_thu_cartoon_studio) TOKEN="${{ secrets.FB_PAGE_TOKEN_HA_THU_CARTOON_STUDIO }}${{ secrets.FB_TOKEN_HA_THU_CARTOON_STUDIO }}${{ secrets.FB_TOKEN_HA_THU }}"; PID="${{ secrets.FB_PAGE_ID_HA_THU_CARTOON_STUDIO }}${{ vars.FB_PAGE_ID_HA_THU_CARTOON_STUDIO }}${{ secrets.FB_PAGE_ID_HA_THU }}${{ vars.FB_PAGE_ID_HA_THU }}"; echo "page_token=$TOKEN" >> $GITHUB_OUTPUT; echo "page_id=$PID" >> $GITHUB_OUTPUT ;;
-            da_thuy_3d_studio) TOKEN="${{ secrets.FB_PAGE_TOKEN_DA_THUY_3D_STUDIO }}${{ secrets.FB_TOKEN_DA_THUY_3D_STUDIO }}${{ secrets.FB_TOKEN_DA_THUY }}"; PID="${{ secrets.FB_PAGE_ID_DA_THUY_3D_STUDIO }}${{ vars.FB_PAGE_ID_DA_THUY_3D_STUDIO }}${{ secrets.FB_PAGE_ID_DA_THUY }}${{ vars.FB_PAGE_ID_DA_THUY }}"; echo "page_token=$TOKEN" >> $GITHUB_OUTPUT; echo "page_id=$PID" >> $GITHUB_OUTPUT ;;
+            viet_nam_nhin_tu_tren)
+              TOKEN="${{ secrets.FB_TOKEN_VIET_NAM_NHIN_TU_TREN }}"
+              PID="${{ secrets.FB_PAGE_ID_VIET_NAM_NHIN_TU_TREN }}"
+              ;;
+            thanh_lam_3d_studio)
+              TOKEN="${{ secrets.FB_PAGE_TOKEN_THANH_LAM_3D_STUDIO }}"
+              PID="${{ secrets.FB_PAGE_ID_THANH_LAM_3D_STUDIO }}"
+              ;;
+            ha_thu_cartoon_studio)
+              TOKEN="${{ secrets.FB_PAGE_TOKEN_HA_THU_CARTOON_STUDIO }}"
+              PID="${{ secrets.FB_PAGE_ID_HA_THU_CARTOON_STUDIO }}"
+              ;;
+            da_thuy_3d_studio)
+              TOKEN="${{ secrets.FB_PAGE_TOKEN_DA_THUY_3D_STUDIO }}"
+              PID="${{ secrets.FB_PAGE_ID_DA_THUY_3D_STUDIO }}"
+              ;;
+            chuyen_tham_60s)
+              TOKEN="${{ secrets.FB_TOKEN_CHUYEN_THAM_60S }}"
+              PID="${{ secrets.FB_PAGE_ID_CHUYEN_THAM_60S }}"
+              ;;
+            sao_lai_the)
+              TOKEN="${{ secrets.FB_TOKEN_SAO_LAI_THE }}"
+              PID="${{ secrets.FB_PAGE_ID_SAO_LAI_THE }}"
+              ;;
+            song_khoe_sau_50)
+              TOKEN="${{ secrets.FB_TOKEN_SONG_KHOE_SAU_50 }}"
+              PID="${{ secrets.FB_PAGE_ID_SONG_KHOE_SAU_50 }}"
+              ;;
+            the_gioi_hoang_da_60s)
+              TOKEN="${{ secrets.FB_TOKEN_THE_GIOI_HOANG_DA_60S }}"
+              PID="${{ secrets.FB_PAGE_ID_THE_GIOI_HOANG_DA_60S }}"
+              ;;
+            loi_phat_day_1_phut)
+              TOKEN="${{ secrets.FB_TOKEN_LOI_PHAT_DAY_1_PHUT }}"
+              PID="${{ secrets.FB_PAGE_ID_LOI_PHAT_DAY_1_PHUT }}"
+              ;;
+            tien_trong_tui)
+              TOKEN="${{ secrets.FB_TOKEN_TIEN_TRONG_TUI }}"
+              PID="${{ secrets.FB_PAGE_ID_TIEN_TRONG_TUI }}"
+              ;;
           esac
-          echo "Channel: ${{ inputs.channel }}"
+          if [ -z "$PID" ]; then echo "ERROR PID empty for ${{ inputs.channel }}"; exit 1; fi
+          if [ -z "$TOKEN" ]; then echo "ERROR TOKEN empty"; exit 1; fi
+          echo "page_id=$PID" >> $GITHUB_OUTPUT
+          echo "page_token=$TOKEN" >> $GITHUB_OUTPUT
+          echo "OK Channel ${{ inputs.channel }} -> PageID ${PID:0:6}****"
 
-      - name: Render - Ghep 3 video
-        if: ${{ inputs.mode == 'video' || inputs.mode == '' }}
-        run: |
-          echo '${{ inputs.script }}' > script.txt
-          edge-tts --voice vi-VN-HoaiMyNeural --text "$(cat script.txt)" --write-media voice.mp3
-          echo "${{ inputs.video_url }}" | tr ',' '\n' > urls.txt
-          rm -f list.txt
-          i=0
-          for url in $(cat urls.txt); do curl -L -o clip_${i}_raw.mp4 $url; ffmpeg -y -i clip_${i}_raw.mp4 -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920" -c:v libx264 -pix_fmt yuv420p -an clip_${i}.mp4; echo "file clip_${i}.mp4" >> list.txt; i=$((i+1)); done
-          ffmpeg -y -f concat -safe 0 -i list.txt -c copy bg_concat.mp4
-          ffmpeg -y -stream_loop 10 -i bg_concat.mp4 -i voice.mp3 -shortest -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920" -c:a aac -c:v libx264 -pix_fmt yuv420p -max_muxing_queue_size 1024 final.mp4
-
-      - name: Render - Anh Flashcard EN/VI/IPA - FIX IPA
+      - name: Render Anh Flashcard
         if: ${{ inputs.mode == 'image_card' }}
-        env:
-          TITLE: ${{ inputs.title }}
-          CONTENT_EN: ${{ inputs.content_en }}
-          CONTENT_VI: ${{ inputs.content_vi }}
-          IPA: ${{ inputs.ipa }}
-          VOCAB: ${{ inputs.vocab }}
-          FB_FORMATTED: ${{ inputs.fb_formatted }}
         run: |
           python3 << 'PY'
           from PIL import Image, ImageDraw, ImageFont
-          import os, textwrap, re
-
+          import os, textwrap
           W, H = 1080, 1920
-          TITLE = os.getenv("TITLE","").strip()
-          EN = os.getenv("CONTENT_EN","").strip()
-          VI = os.getenv("CONTENT_VI","").strip()
-          IPA_RAW = os.getenv("IPA","").strip()
-          VOCAB = os.getenv("VOCAB","").strip()
-          FB_FORMATTED = os.getenv("FB_FORMATTED","").strip()
-
-          # Clean IPA
-          IPA = IPA_RAW.replace("//","").replace("/undefined/","").strip()
-          IPA = IPA.strip("/").strip()
-          if IPA.lower() in ["undefined","null",""]: IPA = ""
-          # Fallback: if IPA empty but EN exists, keep empty to avoid wrong IPA
+          TITLE = os.environ.get("TITLE","").strip() if False else ""
+          # Use env from inputs directly via os
+          import os as _os
+          TITLE = """${{ inputs.title }}""".strip()
+          EN = """${{ inputs.content_en }}""".strip()
+          VI = """${{ inputs.content_vi }}""".strip()
+          IPA_RAW = """${{ inputs.ipa }}""".strip()
+          VOCAB = """${{ inputs.vocab }}""".strip()
+          IPA = IPA_RAW.replace("//","").strip("/").replace("undefined","").strip()
           IPA_DISPLAY = f"/{IPA}/" if IPA else ""
-
-          # Clean vocab
           if not VOCAB or VOCAB.lower() in ["undefined","null"]:
               VOCAB = "LearnEnglish"
-
           def get_font(size, bold=False):
               p = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
               try: return ImageFont.truetype(p, size)
               except: return ImageFont.load_default()
-
           img = Image.new("RGB", (W,H), (15,23,42))
           draw = ImageDraw.Draw(img)
-          # header gradient
           draw.rectangle([0,0,W,900], fill=(30,41,59))
-          draw.ellipse([-80,-80,380,380], fill=(56,189,248,35))
-          draw.ellipse([700,120,1200,620], fill=(168,85,247,35))
-          # white card
           draw.rounded_rectangle([36, 820, W-36, H-36], radius=28, fill=(255,255,255))
-
           y=860
-          def wrapped(text, y, font, color, left=70, right=W-70):
+          def wrapped(text, y, font, color, left=70, right=1010):
               if not text: return y
-              # wrap by width approx
-              max_chars = 36 if font.size>=40 else 42
-              lines = textwrap.wrap(text, width=max_chars)
+              lines = textwrap.wrap(text, width=36 if font.size>=40 else 42)
               for line in lines:
                   draw.text((left, y), line, font=font, fill=color)
                   y+= font.size + 12
                   if y> H-100: break
               return y
-
-          fb_title = get_font(44, True)
-          fb_en = get_font(40, True)
-          fb_vi = get_font(36, False)
-          fb_ipa = get_font(36, False)
-          fb_small = get_font(30, False)
-          fb_vocab = get_font(34, True)
-
+          fb_title = get_font(44, True); fb_en = get_font(40, True); fb_vi = get_font(36, False); fb_ipa = get_font(36, False); fb_small = get_font(30, False); fb_vocab = get_font(34, True)
           if TITLE:
-              y = wrapped(TITLE, y, fb_title, (15,23,42))
-              y+=10
-              draw.line([(70,y),(W-70,y)], fill=(226,232,240), width=2)
-              y+=18
-
+              y = wrapped(TITLE, y, fb_title, (15,23,42)); y+=10; draw.line([(70,y),(W-70,y)], fill=(226,232,240), width=2); y+=18
           if EN:
-              y = wrapped(f"EN: {EN}", y, fb_en, (15,23,42))
-              y+=14
-
+              y = wrapped(f"EN: {EN}", y, fb_en, (15,23,42)); y+=14
           if VI:
-              y = wrapped(f"VI: {VI}", y, fb_vi, (51,65,85))
-              y+=14
-
+              y = wrapped(f"VI: {VI}", y, fb_vi, (51,65,85)); y+=14
           if IPA_DISPLAY:
-              # IPA with different color background
-              draw.rounded_rectangle([60, y-6, W-60, y+fb_ipa.size+18], radius=10, fill=(241,245,249))
-              y = wrapped(f"IPA: {IPA_DISPLAY}", y, fb_ipa, (14,165,233))
-              y+=14
-          else:
-              # if no IPA, still show placeholder to debug
-              print(f"WARNING: IPA empty! RAW={IPA_RAW}")
-
+              draw.rounded_rectangle([60, y-6, 1020, y+fb_ipa.size+18], radius=10, fill=(241,245,249))
+              y = wrapped(f"IPA: {IPA_DISPLAY}", y, fb_ipa, (14,165,233)); y+=14
           if VOCAB:
-              y+=8
-              draw.line([(70,y),(W-70,y)], fill=(226,232,240), width=2)
-              y+=16
-              y = wrapped(f"Vocab: {VOCAB}", y, fb_vocab, (124,58,237))
-
-          # Bottom branding
+              y+=8; draw.line([(70,y),(W-70,y)], fill=(226,232,240), width=2); y+=16; y = wrapped(f"Vocab: {VOCAB}", y, fb_vocab, (124,58,237))
           draw.text((70, H-70), "#TepAndRubi #AnimalFriends #LearnEnglish", font=fb_small, fill=(100,116,139))
-
-          import os
-          os.makedirs("output", exist_ok=True)
-          img.save("output/card.jpg", quality=95)
-          img.save("final.jpg", quality=95)
-          print(f"Saved final.jpg EN={EN} VI={VI} IPA={IPA_DISPLAY} VOCAB={VOCAB}")
+          os.makedirs("output", exist_ok=True); img.save("output/card.jpg", quality=95); img.save("final.jpg", quality=95)
+          print("Saved final.jpg")
           PY
 
-      - name: Post - Cong khai
+      - name: Post Cong khai
         env:
           PAGE_TOKEN: ${{ steps.get_token.outputs.page_token }}
           PAGE_ID: ${{ steps.get_token.outputs.page_id }}
           MODE: ${{ inputs.mode }}
         run: |
           python3 << 'PY'
-          import requests, os, sys, time
-          pid = os.environ.get("PAGE_ID","").strip()
-          token = os.environ.get("PAGE_TOKEN","").strip()
-          mode = os.environ.get("MODE","video")
-          title = """${{ inputs.title }}"""
-          fb_formatted = """${{ inputs.fb_formatted }}"""
-          content_en = """${{ inputs.content_en }}"""
-          content_vi = """${{ inputs.content_vi }}"""
-          ipa = """${{ inputs.ipa }}"""
-          vocab = """${{ inputs.vocab }}"""
-          hook = """${{ inputs.hook }}"""
-
-          # Clean
-          ipa_clean = ipa.strip().strip("/").replace("undefined","").strip()
-          vocab_clean = vocab.strip()
-          if not vocab_clean or vocab_clean.lower()=="undefined": vocab_clean="LearnEnglish"
-
-          if not pid: raise RuntimeError("THIEU FB_PAGE_ID")
-          if not token: raise RuntimeError("THIEU FB_TOKEN")
-
-          # Build caption - LUON co IPA
-          if fb_formatted and fb_formatted.strip() and "undefined" not in fb_formatted.lower():
-              # Use fb_formatted but ensure IPA present
-              desc = fb_formatted
-              if ipa_clean and ipa_clean not in desc:
-                  desc = desc.replace("Vocab:", f"/{ipa_clean}/\n\nVocab:")
-          else:
-              desc = ""
-              if content_vi: desc+= f"{content_vi}\n\n"
-              if content_en: desc+= f"{content_en}\n"
-              if ipa_clean: desc+= f"/{ipa_clean}/\n"
-              else: desc+= "\n"
-              desc+= f"\nVocab: {vocab_clean}\n"
-              desc+= f"#TepAndRubi #AnimalFriends #LearnEnglish #{vocab_clean.replace(' ','')}"
-
-          print(f"Caption:\n{desc}\n")
-          print(f"DEBUG pid={pid} mode={mode} ipa={ipa_clean}")
-
+          import requests, os
+          pid=os.environ.get("PAGE_ID","").strip()
+          token=os.environ.get("PAGE_TOKEN","").strip()
+          mode=os.environ.get("MODE","video")
+          fb_formatted="""${{ inputs.fb_formatted }}"""
+          print(f"Posting to PID {pid[:6]}**** mode={mode}")
+          print(f"Caption preview: {fb_formatted[:200]}")
+          if not pid or not token:
+              raise RuntimeError("Missing ID/TOKEN")
           API="https://graph.facebook.com/v19.0"
           if mode=="image_card":
               url=f"{API}/{pid}/photos"
-              print(f"Dang ANH Page {pid}")
               with open("final.jpg","rb") as f:
-                  r=requests.post(url, data={"caption":desc,"access_token":token,"published":"true"}, files={"source":("final.jpg",f,"image/jpeg")}, timeout=600)
+                  r=requests.post(url, data={"caption":fb_formatted,"access_token":token,"published":"true"}, files={"source":("final.jpg",f,"image/jpeg")}, timeout=600)
               print(r.text)
               j=r.json()
-              if r.status_code>=400 or "error" in j: raise RuntimeError(f"Photo failed {j}")
-              print(f"OK PHOTO {j.get('id')}")
-              sys.exit(0)
-          else:
-              url=f"{API}/{pid}/videos"
-              with open("final.mp4","rb") as f:
-                  r=requests.post(url, data={"title":title,"description":desc,"access_token":token,"published":"true"}, files={"source":("final.mp4",f,"video/mp4")}, timeout=1800)
-              print(r.text)
-              j=r.json()
-              if r.status_code>=400 or "error" in j: raise RuntimeError(f"Video failed {j}")
-              vid=j.get("id")
-              print(f"Video ID {vid}")
-              check=f"{API}/{vid}"
-              for _ in range(24):
-                  time.sleep(10)
-                  c=requests.get(check, params={"fields":"id,published,permalink_url","access_token":token}, timeout=60)
-                  print(c.text)
-                  try:
-                      cd=c.json()
-                      if cd.get("published") is True:
-                          print(f"OK PUBLIC {cd.get('permalink_url')}")
-                          sys.exit(0)
-                  except: pass
-              raise RuntimeError("VIDEO KHONG PUBLIC")
+              if r.status_code>=400 or "error" in j:
+                  raise RuntimeError(f"Failed {j}")
+              print(f"OK {j.get('id')}")
           PY
