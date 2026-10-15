@@ -50,15 +50,6 @@ on:
       species_en:
         required: false
         type: string
-      video_order:
-        required: false
-        type: string
-      scheduled_at:
-        required: false
-        type: string
-      story_id:
-        required: false
-        type: string
 
 jobs:
   render-and-post:
@@ -73,22 +64,24 @@ jobs:
           case "${{ inputs.channel }}" in
             thanh_lam_3d_studio)
               TOKEN="${{ secrets.FB_PAGE_TOKEN_THANH_LAM_3D_STUDIO }}"
-              PID="${{ secrets.FB_PAGE_ID_THANH_LAM_3D_STUDIO }}"
+              PID="${{ vars.FB_PAGE_ID_THANH_LAM_3D_STUDIO }}"
               ;;
             ha_thu_cartoon_studio)
               TOKEN="${{ secrets.FB_PAGE_TOKEN_HA_THU_CARTOON_STUDIO }}"
-              PID="${{ secrets.FB_PAGE_ID_HA_THU_CARTOON_STUDIO }}"
+              PID="${{ vars.FB_PAGE_ID_HA_THU_CARTOON_STUDIO }}"
               ;;
             da_thuy_3d_studio)
               TOKEN="${{ secrets.FB_PAGE_TOKEN_DA_THUY_3D_STUDIO }}"
-              PID="${{ secrets.FB_PAGE_ID_DA_THUY_3D_STUDIO }}"
+              PID="${{ vars.FB_PAGE_ID_DA_THUY_3D_STUDIO }}"
               ;;
           esac
-          if [ -z "$PID" ]; then echo "ERROR PID empty"; exit 1; fi
-          if [ -z "$TOKEN" ]; then echo "ERROR TOKEN empty"; exit 1; fi
+          echo "Token length: ${#TOKEN}"
+          echo "PID: $PID"
+          if [ -z "$PID" ]; then echo "ERROR PID empty - check vars FB_PAGE_ID_${{ inputs.channel }}"; exit 1; fi
+          if [ -z "$TOKEN" ]; then echo "ERROR TOKEN empty - check secrets FB_PAGE_TOKEN_${{ inputs.channel }}"; exit 1; fi
           echo "page_id=$PID" >> $GITHUB_OUTPUT
           echo "page_token=$TOKEN" >> $GITHUB_OUTPUT
-          echo "OK -> PageID ${PID:0:6}****"
+          echo "OK -> Channel ${{ inputs.channel }} -> PageID ${PID:0:6}****"
 
       - name: Render Anh Flashcard Tep & Rubi
         if: ${{ inputs.mode == 'image_card' }}
@@ -139,33 +132,34 @@ jobs:
               y+=8; draw.line([(70,y),(W-70,y)], fill=(226,232,240), width=2); y+=16; y = wrapped(f"Vocab: {VOCAB}", y, fb_vocab, (124,58,237))
           draw.text((70, H-70), "#TepAndRubi #AnimalFriends #LearnEnglish", font=fb_small, fill=(100,116,139))
           os.makedirs("output", exist_ok=True); img.save("output/card.jpg", quality=95); img.save("final.jpg", quality=95)
-          print(f"Saved final.jpg")
+          print(f"Saved final.jpg EN={EN} VI={VI}")
           PY
 
       - name: Post Facebook
+        env:
+          PAGE_TOKEN: ${{ steps.get_token.outputs.page_token }}
+          PAGE_ID: ${{ steps.get_token.outputs.page_id }}
         run: |
           python3 << 'PY'
           import requests, os
-          pid = "${{ steps.get_token.outputs.page_id }}".strip()
-          token = "${{ steps.get_token.outputs.page_token }}".strip()
-          fb_formatted = """${{ inputs.fb_formatted }}"""
-          if not fb_formatted or "undefined" in fb_formatted.lower() or len(fb_formatted.strip()) < 10:
-              en = """${{ inputs.content_en }}""".strip()
-              vi = """${{ inputs.content_vi }}""".strip()
-              ipa = """${{ inputs.ipa }}""".strip().strip("/")
-              vocab = """${{ inputs.vocab }}""".strip() or """${{ inputs.vocabulary_en }}""".strip() or "LearnEnglish"
-              fb_formatted = f"{vi}\n\n{en}\n/{ipa}/\n\nVocab: {vocab}\n#TepAndRubi #AnimalFriends #LearnEnglish #{vocab.replace(' ','')}"
+          pid="${{ steps.get_token.outputs.page_id }}".strip()
+          token="${{ steps.get_token.outputs.page_token }}".strip()
+          fb_formatted="""${{ inputs.fb_formatted }}"""
+          if not fb_formatted or len(fb_formatted.strip()) < 10 or "undefined" in fb_formatted.lower():
+              en="""${{ inputs.content_en }}""".strip()
+              vi="""${{ inputs.content_vi }}""".strip()
+              ipa="""${{ inputs.ipa }}""".strip().strip("/")
+              vocab="""${{ inputs.vocab }}""".strip() or """${{ inputs.vocabulary_en }}""".strip() or "LearnEnglish"
+              fb_formatted=f"{vi}\n\n{en}\n/{ipa}/\n\nVocab: {vocab}\n#TepAndRubi #AnimalFriends #LearnEnglish #{vocab.replace(' ','')}"
           print(f"Posting to PID {pid[:6]}****")
-          print(f"Caption: {fb_formatted[:400]}")
-          if not pid or not token:
-              raise RuntimeError("Missing ID/TOKEN")
-          API = "https://graph.facebook.com/v19.0"
-          url = f"{API}/{pid}/photos"
+          print(f"Caption:\n{fb_formatted[:500]}")
+          API="https://graph.facebook.com/v19.0"
+          url=f"{API}/{pid}/photos"
           with open("final.jpg","rb") as f:
-              r = requests.post(url, data={"caption":fb_formatted,"access_token":token,"published":"true"}, files={"source":("final.jpg",f,"image/jpeg")}, timeout=600)
+              r=requests.post(url, data={"caption":fb_formatted,"access_token":token,"published":"true"}, files={"source":("final.jpg",f,"image/jpeg")}, timeout=600)
           print(r.text)
-          j = r.json()
+          j=r.json()
           if r.status_code>=400 or "error" in j:
-              raise RuntimeError(f"Failed {j}")
+              raise RuntimeError(f"Post Failed {j}")
           print(f"OK Posted {j.get('id')}")
           PY
