@@ -1,181 +1,170 @@
-name: Render and Post Video - FIXED NO CROSS POST
-
+name: Render and Post Video
 on:
   workflow_dispatch:
     inputs:
-      channel:
-        description: 'Chon kenh'
-        required: true
-        type: choice
-        options: [chuyen_tham_60s, sao_lai_the, viet_nam_nhin_tu_tren, song_khoe_sau_50, the_gioi_hoang_da_60s, loi_phat_day_1_phut, tien_trong_tui, thanh_lam_3d_studio, ha_thu_cartoon_studio, da_thuy_3d_studio]
-      mode:
-        required: false
-        default: 'video'
-        type: choice
-        options: [video, image_card]
-      script:
-        required: true
-        type: string
-      video_url:
-        required: false
-        type: string
-      title:
-        required: true
-        type: string
-      content_vi:
-        required: false
-        type: string
-      content_en:
-        required: false
-        type: string
-      ipa:
-        required: false
-        type: string
-      vocab:
-        required: false
-        type: string
-      hook:
-        required: false
-        type: string
-      fb_formatted:
-        required: false
-        type: string
-
+      channel: { description: 'Chon kenh', required: true, type: choice, options: [chuyen_tham_60s, sao_lai_the, viet_nam_nhin_tu_tren, song_khoe_sau_50, the_gioi_hoang_da_60s, loi_phat_day_1_phut, tien_trong_tui] }
+      script: { description: 'Noi dung kich ban', required: true, type: string }
+      video_url: { description: '1 hoac nhieu link Pexels cach nhau dau phay ,', required: true, type: string }
+      title: { description: 'Tieu de video', required: true, type: string }
 jobs:
   render-and-post:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core && pip install edge-tts requests Pillow
-
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg && pip install edge-tts requests
       - id: get_token
         run: |
-          echo "=== CHANNEL: ${{ inputs.channel }} ==="
           case "${{ inputs.channel }}" in
-            viet_nam_nhin_tu_tren)
-              TOKEN="${{ secrets.FB_TOKEN_VIET_NAM_NHIN_TU_TREN }}"
-              PID="${{ secrets.FB_PAGE_ID_VIET_NAM_NHIN_TU_TREN }}"
-              ;;
-            thanh_lam_3d_studio)
-              TOKEN="${{ secrets.FB_PAGE_TOKEN_THANH_LAM_3D_STUDIO }}"
-              PID="${{ secrets.FB_PAGE_ID_THANH_LAM_3D_STUDIO }}"
-              ;;
-            ha_thu_cartoon_studio)
-              TOKEN="${{ secrets.FB_PAGE_TOKEN_HA_THU_CARTOON_STUDIO }}"
-              PID="${{ secrets.FB_PAGE_ID_HA_THU_CARTOON_STUDIO }}"
-              ;;
-            da_thuy_3d_studio)
-              TOKEN="${{ secrets.FB_PAGE_TOKEN_DA_THUY_3D_STUDIO }}"
-              PID="${{ secrets.FB_PAGE_ID_DA_THUY_3D_STUDIO }}"
-              ;;
-            chuyen_tham_60s)
-              TOKEN="${{ secrets.FB_TOKEN_CHUYEN_THAM_60S }}"
-              PID="${{ secrets.FB_PAGE_ID_CHUYEN_THAM_60S }}"
-              ;;
-            sao_lai_the)
-              TOKEN="${{ secrets.FB_TOKEN_SAO_LAI_THE }}"
-              PID="${{ secrets.FB_PAGE_ID_SAO_LAI_THE }}"
-              ;;
-            song_khoe_sau_50)
-              TOKEN="${{ secrets.FB_TOKEN_SONG_KHOE_SAU_50 }}"
-              PID="${{ secrets.FB_PAGE_ID_SONG_KHOE_SAU_50 }}"
-              ;;
-            the_gioi_hoang_da_60s)
-              TOKEN="${{ secrets.FB_TOKEN_THE_GIOI_HOANG_DA_60S }}"
-              PID="${{ secrets.FB_PAGE_ID_THE_GIOI_HOANG_DA_60S }}"
-              ;;
-            loi_phat_day_1_phut)
-              TOKEN="${{ secrets.FB_TOKEN_LOI_PHAT_DAY_1_PHUT }}"
-              PID="${{ secrets.FB_PAGE_ID_LOI_PHAT_DAY_1_PHUT }}"
-              ;;
-            tien_trong_tui)
-              TOKEN="${{ secrets.FB_TOKEN_TIEN_TRONG_TUI }}"
-              PID="${{ secrets.FB_PAGE_ID_TIEN_TRONG_TUI }}"
-              ;;
+            chuyen_tham_60s) echo "page_token=${{ secrets.FB_TOKEN_CHUYEN_THAM_60S }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_CHUYEN_THAM_60S }}" >> $GITHUB_OUTPUT ;;
+            sao_lai_the) echo "page_token=${{ secrets.FB_TOKEN_SAO_LAI_THE }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_SAO_LAI_THE }}" >> $GITHUB_OUTPUT ;;
+            viet_nam_nhin_tu_tren) echo "page_token=${{ secrets.FB_TOKEN_VIET_NAM_NHIN_TU_TREN }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_VIET_NAM_NHIN_TU_TREN }}" >> $GITHUB_OUTPUT ;;
+            song_khoe_sau_50) echo "page_token=${{ secrets.FB_TOKEN_SONG_KHOE_SAU_50 }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_SONG_KHOE_SAU_50 }}" >> $GITHUB_OUTPUT ;;
+            the_gioi_hoang_da_60s) echo "page_token=${{ secrets.FB_TOKEN_THE_GIOI_HOANG_DA_60S }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_THE_GIOI_HOANG_DA_60S }}" >> $GITHUB_OUTPUT ;;
+            loi_phat_day_1_phut) echo "page_token=${{ secrets.FB_TOKEN_LOI_PHAT_DAY_1_PHUT }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_LOI_PHAT_DAY_1_PHUT }}" >> $GITHUB_OUTPUT ;;
+            tien_trong_tui) echo "page_token=${{ secrets.FB_TOKEN_TIEN_TRONG_TUI }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_TIEN_TRONG_TUI }}" >> $GITHUB_OUTPUT ;;
           esac
-          if [ -z "$PID" ]; then echo "ERROR PID empty for ${{ inputs.channel }}"; exit 1; fi
-          if [ -z "$TOKEN" ]; then echo "ERROR TOKEN empty"; exit 1; fi
-          echo "page_id=$PID" >> $GITHUB_OUTPUT
-          echo "page_token=$TOKEN" >> $GITHUB_OUTPUT
-          echo "OK Channel ${{ inputs.channel }} -> PageID ${PID:0:6}****"
-
-      - name: Render Anh Flashcard
-        if: ${{ inputs.mode == 'image_card' }}
+      - name: Render - Ghep 3 video & khong cat tieng
         run: |
-          python3 << 'PY'
-          from PIL import Image, ImageDraw, ImageFont
-          import os, textwrap
-          W, H = 1080, 1920
-          TITLE = os.environ.get("TITLE","").strip() if False else ""
-          # Use env from inputs directly via os
-          import os as _os
-          TITLE = """${{ inputs.title }}""".strip()
-          EN = """${{ inputs.content_en }}""".strip()
-          VI = """${{ inputs.content_vi }}""".strip()
-          IPA_RAW = """${{ inputs.ipa }}""".strip()
-          VOCAB = """${{ inputs.vocab }}""".strip()
-          IPA = IPA_RAW.replace("//","").strip("/").replace("undefined","").strip()
-          IPA_DISPLAY = f"/{IPA}/" if IPA else ""
-          if not VOCAB or VOCAB.lower() in ["undefined","null"]:
-              VOCAB = "LearnEnglish"
-          def get_font(size, bold=False):
-              p = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-              try: return ImageFont.truetype(p, size)
-              except: return ImageFont.load_default()
-          img = Image.new("RGB", (W,H), (15,23,42))
-          draw = ImageDraw.Draw(img)
-          draw.rectangle([0,0,W,900], fill=(30,41,59))
-          draw.rounded_rectangle([36, 820, W-36, H-36], radius=28, fill=(255,255,255))
-          y=860
-          def wrapped(text, y, font, color, left=70, right=1010):
-              if not text: return y
-              lines = textwrap.wrap(text, width=36 if font.size>=40 else 42)
-              for line in lines:
-                  draw.text((left, y), line, font=font, fill=color)
-                  y+= font.size + 12
-                  if y> H-100: break
-              return y
-          fb_title = get_font(44, True); fb_en = get_font(40, True); fb_vi = get_font(36, False); fb_ipa = get_font(36, False); fb_small = get_font(30, False); fb_vocab = get_font(34, True)
-          if TITLE:
-              y = wrapped(TITLE, y, fb_title, (15,23,42)); y+=10; draw.line([(70,y),(W-70,y)], fill=(226,232,240), width=2); y+=18
-          if EN:
-              y = wrapped(f"EN: {EN}", y, fb_en, (15,23,42)); y+=14
-          if VI:
-              y = wrapped(f"VI: {VI}", y, fb_vi, (51,65,85)); y+=14
-          if IPA_DISPLAY:
-              draw.rounded_rectangle([60, y-6, 1020, y+fb_ipa.size+18], radius=10, fill=(241,245,249))
-              y = wrapped(f"IPA: {IPA_DISPLAY}", y, fb_ipa, (14,165,233)); y+=14
-          if VOCAB:
-              y+=8; draw.line([(70,y),(W-70,y)], fill=(226,232,240), width=2); y+=16; y = wrapped(f"Vocab: {VOCAB}", y, fb_vocab, (124,58,237))
-          draw.text((70, H-70), "#TepAndRubi #AnimalFriends #LearnEnglish", font=fb_small, fill=(100,116,139))
-          os.makedirs("output", exist_ok=True); img.save("output/card.jpg", quality=95); img.save("final.jpg", quality=95)
-          print("Saved final.jpg")
-          PY
-
-      - name: Post Cong khai
+          echo '${{ inputs.script }}' > script.txt
+          edge-tts --voice vi-VN-HoaiMyNeural --text "$(cat script.txt)" --write-media voice.mp3
+          
+          echo "${{ inputs.video_url }}" | tr ',' '\n' > urls.txt
+          rm -f list.txt
+          i=0
+          for url in $(cat urls.txt); do
+            echo "Tai video $i: $url"
+            curl -L -o clip_${i}_raw.mp4 $url
+            # Chuan hoa ve 1080x1920 de ghep khong loi
+            ffmpeg -y -i clip_${i}_raw.mp4 -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920" -c:v libx264 -pix_fmt yuv420p -an clip_${i}.mp4
+            echo "file clip_${i}.mp4" >> list.txt
+            i=$((i+1))
+          done
+          
+          # Noi 3 clip lai
+          ffmpeg -y -f concat -safe 0 -i list.txt -c copy bg_concat.mp4
+          
+          # Lap lai cho du do dai giong noi
+          ffmpeg -y -stream_loop 10 -i bg_concat.mp4 -i voice.mp3 -shortest -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920" -c:a aac -c:v libx264 -pix_fmt yuv420p -max_muxing_queue_size 1024 final.mp4
+          
+      - name: Post - Cong khai cho moi nguoi xem
         env:
           PAGE_TOKEN: ${{ steps.get_token.outputs.page_token }}
           PAGE_ID: ${{ steps.get_token.outputs.page_id }}
-          MODE: ${{ inputs.mode }}
         run: |
           python3 << 'PY'
-          import requests, os
-          pid=os.environ.get("PAGE_ID","").strip()
-          token=os.environ.get("PAGE_TOKEN","").strip()
-          mode=os.environ.get("MODE","video")
-          fb_formatted="""${{ inputs.fb_formatted }}"""
-          print(f"Posting to PID {pid[:6]}**** mode={mode}")
-          print(f"Caption preview: {fb_formatted[:200]}")
-          if not pid or not token:
-              raise RuntimeError("Missing ID/TOKEN")
-          API="https://graph.facebook.com/v19.0"
-          if mode=="image_card":
-              url=f"{API}/{pid}/photos"
-              with open("final.jpg","rb") as f:
-                  r=requests.post(url, data={"caption":fb_formatted,"access_token":token,"published":"true"}, files={"source":("final.jpg",f,"image/jpeg")}, timeout=600)
-              print(r.text)
-              j=r.json()
-              if r.status_code>=400 or "error" in j:
-                  raise RuntimeError(f"Failed {j}")
-              print(f"OK {j.get('id')}")
+          import requests, os, time, sys
+
+          pid = os.environ.get("PAGE_ID", "").strip()
+          token = os.environ.get("PAGE_TOKEN", "").strip()
+          title = """${{ inputs.title }}"""
+          script = """${{ inputs.script }}"""
+          desc = f"{title}\n\n{script}\n\n#chuyentham60s"
+
+          if not pid:
+              raise RuntimeError("THIEU FB_PAGE_ID cho kenh nay.")
+          if not token:
+              raise RuntimeError("THIEU FB_TOKEN cho kenh nay.")
+
+          API = "https://graph.facebook.com/v19.0"
+          upload_url = f"{API}/{pid}/videos"
+
+          print(f"Dang video len Facebook Page {pid}: {title}")
+          print("Bat buoc published=true va se kiem tra den khi video thuc su public.")
+
+          # 1) Upload video va yeu cau publish cong khai.
+          with open("final.mp4", "rb") as f:
+              r = requests.post(
+                  upload_url,
+                  data={
+                      "title": title,
+                      "description": desc,
+                      "access_token": token,
+                      "published": "true",
+                  },
+                  files={"source": ("final.mp4", f, "video/mp4")},
+                  timeout=1800,
+              )
+
+          print(f"Facebook upload HTTP {r.status_code}")
+          print(r.text)
+
+          try:
+              data = r.json()
+          except ValueError:
+              raise RuntimeError("Facebook tra ve khong phai JSON.")
+
+          if r.status_code >= 400:
+              raise RuntimeError(f"Facebook upload FAILED: {data}")
+
+          if "error" in data:
+              raise RuntimeError(f"Facebook upload FAILED: {data['error']}")
+
+          vid = data.get("id")
+          if not vid:
+              raise RuntimeError(f"Khong nhan duoc Video ID tu Facebook: {data}")
+
+          print(f"Facebook da nhan video ID: {vid}")
+
+          # 2) Polling trang thai thay vi chi cho 5 giay.
+          #    Xac nhan video da duoc xu ly va published=true.
+          check_url = f"{API}/{vid}"
+          max_attempts = 24
+          wait_seconds = 10
+          last_data = None
+
+          for attempt in range(1, max_attempts + 1):
+              time.sleep(wait_seconds)
+
+              check = requests.get(
+                  check_url,
+                  params={
+                      "fields": "id,status,published,permalink_url",
+                      "access_token": token,
+                  },
+                  timeout=60,
+              )
+
+              print(f"Check {attempt}/{max_attempts} - HTTP {check.status_code}")
+              print(check.text)
+
+              if check.status_code >= 400:
+                  last_data = {"http_status": check.status_code, "body": check.text}
+                  continue
+
+              try:
+                  check_data = check.json()
+              except ValueError:
+                  last_data = {"body": check.text}
+                  continue
+
+              last_data = check_data
+
+              if "error" in check_data:
+                  continue
+
+              published = check_data.get("published")
+              status = check_data.get("status")
+
+              if isinstance(status, dict):
+                  video_status = (
+                      status.get("video_status")
+                      or status.get("processing_phase")
+                      or status.get("status")
+                      or str(status)
+                  )
+              else:
+                  video_status = status
+
+              print(f"Video status={video_status}; published={published}")
+
+              if published is True:
+                  print("OK: VIDEO DA DUOC PUBLISH CONG KHAI.")
+                  if check_data.get("permalink_url"):
+                      print(f"URL: {check_data['permalink_url']}")
+                  sys.exit(0)
+
+          raise RuntimeError(
+              "VIDEO KHONG XAC NHAN DUOC LA CONG KHAI SAU THOI GIAN CHO. "
+              f"Video ID={vid}; last_response={last_data}"
+          )
           PY
