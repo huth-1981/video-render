@@ -1,4 +1,4 @@
-name: Render 3D Studio - Tep and Rubi
+name: Render 3D Studio - Image Card Only
 
 on:
   workflow_dispatch:
@@ -7,14 +7,19 @@ on:
         description: 'Chon kenh 3D'
         required: true
         type: choice
-        options: [thanh_lam_3d_studio, ha_thu_cartoon_studio, da_thuy_3d_studio]
+        options:
+          - thanh_lam_3d_studio
+          - ha_thu_cartoon_studio
+          - da_thuy_3d_studio
       mode:
         description: 'Che do render'
-        required: false
+        required: true
         default: 'image_card'
         type: choice
-        options: [video, image_card]
+        options:
+          - image_card
       title:
+        description: 'Tieu de flashcard'
         required: true
         type: string
       script:
@@ -54,112 +59,213 @@ on:
 jobs:
   render-and-post:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core && pip install requests Pillow
 
-      - id: get_token
+      - name: Install image dependencies
         run: |
-          echo "=== CHANNEL: ${{ inputs.channel }} ==="
-          case "${{ inputs.channel }}" in
-            thanh_lam_3d_studio)
-              TOKEN="${{ secrets.FB_PAGE_TOKEN_THANH_LAM_3D_STUDIO }}"
-              PID="${{ vars.FB_PAGE_ID_THANH_LAM_3D_STUDIO }}"
-              ;;
-            ha_thu_cartoon_studio)
-              TOKEN="${{ secrets.FB_PAGE_TOKEN_HA_THU_CARTOON_STUDIO }}"
-              PID="${{ vars.FB_PAGE_ID_HA_THU_CARTOON_STUDIO }}"
-              ;;
-            da_thuy_3d_studio)
-              TOKEN="${{ secrets.FB_PAGE_TOKEN_DA_THUY_3D_STUDIO }}"
-              PID="${{ vars.FB_PAGE_ID_DA_THUY_3D_STUDIO }}"
-              ;;
-          esac
-          echo "Token length: ${#TOKEN}"
-          echo "PID: $PID"
-          if [ -z "$PID" ]; then echo "ERROR PID empty - check vars FB_PAGE_ID_${{ inputs.channel }}"; exit 1; fi
-          if [ -z "$TOKEN" ]; then echo "ERROR TOKEN empty - check secrets FB_PAGE_TOKEN_${{ inputs.channel }}"; exit 1; fi
-          echo "page_id=$PID" >> $GITHUB_OUTPUT
-          echo "page_token=$TOKEN" >> $GITHUB_OUTPUT
-          echo "OK -> Channel ${{ inputs.channel }} -> PageID ${PID:0:6}****"
+          sudo apt-get update
+          sudo apt-get install -y fonts-dejavu-core
+          python3 -m pip install --upgrade pip
+          python3 -m pip install requests Pillow
 
-      - name: Render Anh Flashcard Tep & Rubi
+      # Do not write the Facebook token to GITHUB_OUTPUT; GitHub may suppress secret outputs.
+      - name: Validate Facebook Page configuration
+        env:
+          CHANNEL: ${{ inputs.channel }}
+          PAGE_TOKEN: ${{ inputs.channel == 'thanh_lam_3d_studio' && secrets.FB_PAGE_TOKEN_THANH_LAM_3D_STUDIO || inputs.channel == 'ha_thu_cartoon_studio' && secrets.FB_PAGE_TOKEN_HA_THU_CARTOON_STUDIO || secrets.FB_PAGE_TOKEN_DA_THUY_3D_STUDIO }}
+          PAGE_ID: ${{ inputs.channel == 'thanh_lam_3d_studio' && vars.FB_PAGE_ID_THANH_LAM_3D_STUDIO || inputs.channel == 'ha_thu_cartoon_studio' && vars.FB_PAGE_ID_HA_THU_CARTOON_STUDIO || vars.FB_PAGE_ID_DA_THUY_3D_STUDIO }}
+        run: |
+          if [ -z "$PAGE_ID" ]; then
+            echo "ERROR: Facebook Page ID is empty for channel $CHANNEL"
+            exit 1
+          fi
+          if [ -z "$PAGE_TOKEN" ]; then
+            echo "ERROR: Facebook Page token is empty for channel $CHANNEL"
+            exit 1
+          fi
+          echo "Facebook configuration OK for $CHANNEL; Page ID prefix: ${PAGE_ID:0:6}****"
+
+      - name: Render image flashcard
         if: ${{ inputs.mode == 'image_card' }}
+        env:
+          CHANNEL: ${{ inputs.channel }}
+          CARD_TITLE: ${{ inputs.title }}
+          CONTENT_EN: ${{ inputs.content_en }}
+          CONTENT_VI: ${{ inputs.content_vi }}
+          IPA_RAW: ${{ inputs.ipa }}
+          VOCAB: ${{ inputs.vocab }}
+          VOCABULARY_EN: ${{ inputs.vocabulary_en }}
+          SPECIES_VI: ${{ inputs.species_vi }}
+          SPECIES_EN: ${{ inputs.species_en }}
         run: |
-          python3 << 'PY'
+          python3 <<'PY'
           from PIL import Image, ImageDraw, ImageFont
           import os, textwrap
+
           W, H = 1080, 1920
-          TITLE = """${{ inputs.title }}""".strip()
-          EN = """${{ inputs.content_en }}""".strip()
-          VI = """${{ inputs.content_vi }}""".strip()
-          IPA_RAW = """${{ inputs.ipa }}""".strip()
-          VOCAB = """${{ inputs.vocab }}""".strip()
-          if not VOCAB:
-              VOCAB = """${{ inputs.vocabulary_en }}""".strip()
-          IPA = IPA_RAW.replace("//","").strip("/").replace("undefined","").strip()
-          IPA_DISPLAY = f"/{IPA}/" if IPA else ""
-          if not VOCAB or VOCAB.lower() in ["undefined","null"]:
-              VOCAB = "LearnEnglish"
+          title = os.environ.get("CARD_TITLE", "").strip()
+          en = os.environ.get("CONTENT_EN", "").strip()
+          vi = os.environ.get("CONTENT_VI", "").strip()
+          ipa_raw = os.environ.get("IPA_RAW", "").strip()
+          vocab = (os.environ.get("VOCAB", "").strip()
+                   or os.environ.get("VOCABULARY_EN", "").strip())
+          species_vi = os.environ.get("SPECIES_VI", "").strip()
+          species_en = os.environ.get("SPECIES_EN", "").strip()
+          channel = os.environ.get("CHANNEL", "").strip()
+
+          ipa = ipa_raw.replace("//", "").replace("undefined", "").strip().strip("/")
+          ipa_display = f"/{ipa}/" if ipa else ""
+
+          if not any([title, en, vi, vocab]):
+              raise SystemExit("ERROR: No usable flashcard content was supplied.")
+          if not vocab or vocab.lower() in ("undefined", "null"):
+              vocab = "LearnEnglish"
+
           def get_font(size, bold=False):
-              p = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-              try: return ImageFont.truetype(p, size)
-              except: return ImageFont.load_default()
-          img = Image.new("RGB", (W,H), (15,23,42))
+              path = ("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+                      if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+              try:
+                  return ImageFont.truetype(path, size)
+              except OSError:
+                  return ImageFont.load_default()
+
+          img = Image.new("RGB", (W, H), (15, 23, 42))
           draw = ImageDraw.Draw(img)
-          draw.rectangle([0,0,W,900], fill=(30,41,59))
-          draw.rounded_rectangle([36, 820, W-36, H-36], radius=28, fill=(255,255,255))
-          y=860
-          def wrapped(text, y, font, color, left=70, right=1010):
-              if not text: return y
-              lines = textwrap.wrap(text, width=36 if font.size>=40 else 42)
-              for line in lines:
-                  draw.text((left, y), line, font=font, fill=color)
-                  y+= font.size + 12
-                  if y> H-100: break
+          draw.rectangle([0, 0, W, 900], fill=(30, 41, 59))
+          draw.rounded_rectangle([36, 820, W-36, H-36], radius=28, fill=(255, 255, 255))
+
+          title_font = get_font(44, True)
+          en_font = get_font(40, True)
+          vi_font = get_font(36)
+          ipa_font = get_font(34)
+          vocab_font = get_font(34, True)
+          footer_font = get_font(25)
+          y = 860
+          max_width = W - 140
+          bottom_limit = H - 145
+
+          def wrap_by_pixels(text, font, max_px):
+              words = str(text).split()
+              if not words:
+                  return []
+              lines, current = [], words[0]
+              for word in words[1:]:
+                  candidate = current + " " + word
+                  if draw.textlength(candidate, font=font) <= max_px:
+                      current = candidate
+                  else:
+                      lines.append(current)
+                      current = word
+              lines.append(current)
+              return lines
+
+          def wrapped(text, y, font, color, gap=10):
+              if not text:
+                  return y
+              for line in wrap_by_pixels(text, font, max_width):
+                  if y + font.size + 8 > bottom_limit:
+                      draw.text((70, bottom_limit - font.size), "...", font=font, fill=color)
+                      return bottom_limit
+                  draw.text((70, y), line, font=font, fill=color)
+                  y += font.size + gap
               return y
-          fb_title = get_font(44, True); fb_en = get_font(40, True); fb_vi = get_font(36, False); fb_ipa = get_font(36, False); fb_small = get_font(30, False); fb_vocab = get_font(34, True)
-          if TITLE:
-              y = wrapped(TITLE, y, fb_title, (15,23,42)); y+=10; draw.line([(70,y),(W-70,y)], fill=(226,232,240), width=2); y+=18
-          if EN:
-              y = wrapped(f"EN: {EN}", y, fb_en, (15,23,42)); y+=14
-          if VI:
-              y = wrapped(f"VI: {VI}", y, fb_vi, (51,65,85)); y+=14
-          if IPA_DISPLAY:
-              draw.rounded_rectangle([60, y-6, 1020, y+fb_ipa.size+18], radius=10, fill=(241,245,249))
-              y = wrapped(f"IPA: {IPA_DISPLAY}", y, fb_ipa, (14,165,233)); y+=14
-          if VOCAB:
-              y+=8; draw.line([(70,y),(W-70,y)], fill=(226,232,240), width=2); y+=16; y = wrapped(f"Vocab: {VOCAB}", y, fb_vocab, (124,58,237))
-          draw.text((70, H-70), "#TepAndRubi #AnimalFriends #LearnEnglish", font=fb_small, fill=(100,116,139))
-          os.makedirs("output", exist_ok=True); img.save("output/card.jpg", quality=95); img.save("final.jpg", quality=95)
-          print(f"Saved final.jpg EN={EN} VI={VI}")
+
+          if title:
+              y = wrapped(title, y, title_font, (15, 23, 42), 8) + 10
+              draw.line([(70, y), (W-70, y)], fill=(226, 232, 240), width=2)
+              y += 18
+          if en:
+              y = wrapped("EN: " + en, y, en_font, (15, 23, 42), 10) + 12
+          if vi:
+              y = wrapped("VI: " + vi, y, vi_font, (51, 65, 85), 10) + 12
+          if ipa_display:
+              y = wrapped("IPA: " + ipa_display, y, ipa_font, (14, 165, 233), 10) + 12
+          if vocab:
+              draw.line([(70, y), (W-70, y)], fill=(226, 232, 240), width=2)
+              y += 18
+              y = wrapped("Vocab: " + vocab, y, vocab_font, (124, 58, 237), 10)
+
+          channel_tags = {
+              "thanh_lam_3d_studio": "#TepAndRubi #AnimalFriends #LearnEnglish",
+              "ha_thu_cartoon_studio": "#KokoAndLulu #PlantWorld #LearnEnglish",
+              "da_thuy_3d_studio": "#MimiAndBong #BugSquad #LearnEnglish",
+          }
+          footer = channel_tags.get(channel, "#LearnEnglish")
+          if species_en:
+              footer += " #" + "".join(species_en.split())
+          draw.text((70, H-75), footer[:75], font=footer_font, fill=(203, 213, 225))
+
+          os.makedirs("output", exist_ok=True)
+          img.save("output/card.jpg", quality=95)
+          img.save("final.jpg", quality=95)
+          print(f"Created text flashcard for channel={channel}, species={species_en or species_vi}")
           PY
 
-      - name: Post Facebook
+      - name: Post image to Facebook Page
+        if: ${{ inputs.mode == 'image_card' }}
         env:
-          PAGE_TOKEN: ${{ steps.get_token.outputs.page_token }}
-          PAGE_ID: ${{ steps.get_token.outputs.page_id }}
+          CHANNEL: ${{ inputs.channel }}
+          PAGE_TOKEN: ${{ inputs.channel == 'thanh_lam_3d_studio' && secrets.FB_PAGE_TOKEN_THANH_LAM_3D_STUDIO || inputs.channel == 'ha_thu_cartoon_studio' && secrets.FB_PAGE_TOKEN_HA_THU_CARTOON_STUDIO || secrets.FB_PAGE_TOKEN_DA_THUY_3D_STUDIO }}
+          PAGE_ID: ${{ inputs.channel == 'thanh_lam_3d_studio' && vars.FB_PAGE_ID_THANH_LAM_3D_STUDIO || inputs.channel == 'ha_thu_cartoon_studio' && vars.FB_PAGE_ID_HA_THU_CARTOON_STUDIO || vars.FB_PAGE_ID_DA_THUY_3D_STUDIO }}
+          FB_FORMATTED: ${{ inputs.fb_formatted }}
+          CONTENT_EN: ${{ inputs.content_en }}
+          CONTENT_VI: ${{ inputs.content_vi }}
+          IPA_RAW: ${{ inputs.ipa }}
+          VOCAB: ${{ inputs.vocab }}
+          VOCABULARY_EN: ${{ inputs.vocabulary_en }}
+          SPECIES_EN: ${{ inputs.species_en }}
         run: |
-          python3 << 'PY'
-          import requests, os
-          pid="${{ steps.get_token.outputs.page_id }}".strip()
-          token="${{ steps.get_token.outputs.page_token }}".strip()
-          fb_formatted="""${{ inputs.fb_formatted }}"""
-          if not fb_formatted or len(fb_formatted.strip()) < 10 or "undefined" in fb_formatted.lower():
-              en="""${{ inputs.content_en }}""".strip()
-              vi="""${{ inputs.content_vi }}""".strip()
-              ipa="""${{ inputs.ipa }}""".strip().strip("/")
-              vocab="""${{ inputs.vocab }}""".strip() or """${{ inputs.vocabulary_en }}""".strip() or "LearnEnglish"
-              fb_formatted=f"{vi}\n\n{en}\n/{ipa}/\n\nVocab: {vocab}\n#TepAndRubi #AnimalFriends #LearnEnglish #{vocab.replace(' ','')}"
-          print(f"Posting to PID {pid[:6]}****")
-          print(f"Caption:\n{fb_formatted[:500]}")
-          API="https://graph.facebook.com/v19.0"
-          url=f"{API}/{pid}/photos"
-          with open("final.jpg","rb") as f:
-              r=requests.post(url, data={"caption":fb_formatted,"access_token":token,"published":"true"}, files={"source":("final.jpg",f,"image/jpeg")}, timeout=600)
-          print(r.text)
-          j=r.json()
-          if r.status_code>=400 or "error" in j:
-              raise RuntimeError(f"Post Failed {j}")
-          print(f"OK Posted {j.get('id')}")
+          python3 <<'PY'
+          import os, requests
+
+          channel = os.environ.get("CHANNEL", "").strip()
+          pid = os.environ.get("PAGE_ID", "").strip()
+          token = os.environ.get("PAGE_TOKEN", "").strip()
+          caption = os.environ.get("FB_FORMATTED", "").strip()
+
+          en = os.environ.get("CONTENT_EN", "").strip()
+          vi = os.environ.get("CONTENT_VI", "").strip()
+          ipa = os.environ.get("IPA_RAW", "").strip().strip("/")
+          vocab = (os.environ.get("VOCAB", "").strip()
+                   or os.environ.get("VOCABULARY_EN", "").strip()
+                   or "LearnEnglish")
+          species_en = os.environ.get("SPECIES_EN", "").strip()
+
+          if not pid or not token:
+              raise RuntimeError("Facebook Page ID or token is missing.")
+          if not os.path.isfile("final.jpg"):
+              raise RuntimeError("final.jpg was not created; refusing to post.")
+
+          if (not caption or len(caption) < 10 or "undefined" in caption.lower()):
+              ipa_line = f"/{ipa}/\n" if ipa else ""
+              tags = {
+                  "thanh_lam_3d_studio": "#TepAndRubi #AnimalFriends #LearnEnglish",
+                  "ha_thu_cartoon_studio": "#KokoAndLulu #PlantWorld #LearnEnglish",
+                  "da_thuy_3d_studio": "#MimiAndBong #BugSquad #LearnEnglish",
+              }.get(channel, "#LearnEnglish")
+              species_tag = "#" + "".join(species_en.split()) if species_en else ""
+              caption = f"{vi}\n\n{en}\n{ipa_line}\nVocab: {vocab}\n{tags} {species_tag}".strip()
+
+          print(f"Posting image to Facebook Page {pid[:6]}**** for {channel}")
+          api_url = f"https://graph.facebook.com/v19.0/{pid}/photos"
+          with open("final.jpg", "rb") as image_file:
+              response = requests.post(
+                  api_url,
+                  data={"caption": caption, "access_token": token, "published": "true"},
+                  files={"source": ("final.jpg", image_file, "image/jpeg")},
+                  timeout=180,
+              )
+
+          try:
+              result = response.json()
+          except ValueError:
+              result = {"response_text": response.text[:1000]}
+          if response.status_code >= 400 or "error" in result:
+              raise RuntimeError(f"Facebook post failed: {result}")
+          post_id = result.get("post_id") or result.get("id")
+          if not post_id:
+              raise RuntimeError(f"Facebook response did not contain a post ID: {result}")
+          print(f"POST_SUCCESS channel={channel} post_id={post_id}")
           PY
