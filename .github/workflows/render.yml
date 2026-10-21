@@ -103,10 +103,9 @@ jobs:
           printf '%s' "$INPUT_SCRIPT" > script.txt
           edge-tts --voice vi-VN-HoaiMyNeural --text "$(cat script.txt)" --write-media voice_raw.mp3
 
-          # Chi cat im lang duoi cuoi audio; khong cat cac khoang nghi giua cau.
-          ffmpeg -hide_banner -loglevel error -y -i voice_raw.mp3 \
-            -af "areverse,silenceremove=start_periods=1:start_duration=0.3:start_threshold=-45dB,areverse" \
-            voice.mp3
+          # Giu nguyen audio goc de tranh bo loc cat nham cac chu cuoi nho/nhanh.
+          # Neu TTS co mot chut im lang cuoi, giu lai van an toan hon cat mat loi.
+          cp voice_raw.mp3 voice.mp3
 
           # Flycam can khung ngang; cac kenh short khac dung khung doc.
           if [ "$CHANNEL" = "viet_nam_nhin_tu_tren" ]; then
