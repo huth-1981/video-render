@@ -1,250 +1,170 @@
 name: Render and Post Video
-
 on:
   workflow_dispatch:
     inputs:
-      channel:
-        description: 'Chon kenh'
-        required: true
-        type: choice
-        options:
-          - chuyen_tham_60s
-          - sao_lai_the
-          - viet_nam_nhin_tu_tren
-          - song_khoe_sau_50
-          - the_gioi_hoang_da_60s
-          - loi_phat_day_1_phut
-          - tien_trong_tui
-      script:
-        description: 'Noi dung kich ban'
-        required: true
-        type: string
-      video_url:
-        description: 'Mot hoac nhieu link Pexels, cach nhau bang dau phay'
-        required: true
-        type: string
-      title:
-        description: 'Tieu de video'
-        required: true
-        type: string
-
+      channel: { description: 'Chon kenh', required: true, type: choice, options: [chuyen_tham_60s, sao_lai_the, viet_nam_nhin_tu_tren, song_khoe_sau_50, the_gioi_hoang_da_60s, loi_phat_day_1_phut, tien_trong_tui] }
+      script: { description: 'Noi dung kich ban', required: true, type: string }
+      video_url: { description: '1 hoac nhieu link Pexels cach nhau dau phay ,', required: true, type: string }
+      title: { description: 'Tieu de video', required: true, type: string }
 jobs:
   render-and-post:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install dependencies
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg && pip install edge-tts requests
+      - id: get_token
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-          python -m pip install --upgrade pip
-          pip install edge-tts requests
-
-      - name: Select Facebook Page credentials
-        id: get_token
-        env:
-          CHANNEL: ${{ inputs.channel }}
-          TOKEN_CHUYEN_THAM: ${{ secrets.FB_TOKEN_CHUYEN_THAM_60S }}
-          PAGE_CHUYEN_THAM: ${{ vars.FB_PAGE_ID_CHUYEN_THAM_60S }}
-          TOKEN_SAO_LAI_THE: ${{ secrets.FB_TOKEN_SAO_LAI_THE }}
-          PAGE_SAO_LAI_THE: ${{ vars.FB_PAGE_ID_SAO_LAI_THE }}
-          TOKEN_VIET_NAM: ${{ secrets.FB_TOKEN_VIET_NAM_NHIN_TU_TREN }}
-          PAGE_VIET_NAM: ${{ vars.FB_PAGE_ID_VIET_NAM_NHIN_TU_TREN }}
-          TOKEN_SONG_KHOE: ${{ secrets.FB_TOKEN_SONG_KHOE_SAU_50 }}
-          PAGE_SONG_KHOE: ${{ vars.FB_PAGE_ID_SONG_KHOE_SAU_50 }}
-          TOKEN_HOANG_DA: ${{ secrets.FB_TOKEN_THE_GIOI_HOANG_DA_60S }}
-          PAGE_HOANG_DA: ${{ vars.FB_PAGE_ID_THE_GIOI_HOANG_DA_60S }}
-          TOKEN_LOI_PHAT: ${{ secrets.FB_TOKEN_LOI_PHAT_DAY_1_PHUT }}
-          PAGE_LOI_PHAT: ${{ vars.FB_PAGE_ID_LOI_PHAT_DAY_1_PHUT }}
-          TOKEN_TIEN: ${{ secrets.FB_TOKEN_TIEN_TRONG_TUI }}
-          PAGE_TIEN: ${{ vars.FB_PAGE_ID_TIEN_TRONG_TUI }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          case "$CHANNEL" in
-            chuyen_tham_60s) TOKEN="$TOKEN_CHUYEN_THAM"; PAGE="$PAGE_CHUYEN_THAM" ;;
-            sao_lai_the) TOKEN="$TOKEN_SAO_LAI_THE"; PAGE="$PAGE_SAO_LAI_THE" ;;
-            viet_nam_nhin_tu_tren) TOKEN="$TOKEN_VIET_NAM"; PAGE="$PAGE_VIET_NAM" ;;
-            song_khoe_sau_50) TOKEN="$TOKEN_SONG_KHOE"; PAGE="$PAGE_SONG_KHOE" ;;
-            the_gioi_hoang_da_60s) TOKEN="$TOKEN_HOANG_DA"; PAGE="$PAGE_HOANG_DA" ;;
-            loi_phat_day_1_phut) TOKEN="$TOKEN_LOI_PHAT"; PAGE="$PAGE_LOI_PHAT" ;;
-            tien_trong_tui) TOKEN="$TOKEN_TIEN"; PAGE="$PAGE_TIEN" ;;
-            *) echo "Kenh khong hop le: $CHANNEL"; exit 1 ;;
+          case "${{ inputs.channel }}" in
+            chuyen_tham_60s) echo "page_token=${{ secrets.FB_TOKEN_CHUYEN_THAM_60S }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_CHUYEN_THAM_60S }}" >> $GITHUB_OUTPUT ;;
+            sao_lai_the) echo "page_token=${{ secrets.FB_TOKEN_SAO_LAI_THE }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_SAO_LAI_THE }}" >> $GITHUB_OUTPUT ;;
+            viet_nam_nhin_tu_tren) echo "page_token=${{ secrets.FB_TOKEN_VIET_NAM_NHIN_TU_TREN }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_VIET_NAM_NHIN_TU_TREN }}" >> $GITHUB_OUTPUT ;;
+            song_khoe_sau_50) echo "page_token=${{ secrets.FB_TOKEN_SONG_KHOE_SAU_50 }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_SONG_KHOE_SAU_50 }}" >> $GITHUB_OUTPUT ;;
+            the_gioi_hoang_da_60s) echo "page_token=${{ secrets.FB_TOKEN_THE_GIOI_HOANG_DA_60S }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_THE_GIOI_HOANG_DA_60S }}" >> $GITHUB_OUTPUT ;;
+            loi_phat_day_1_phut) echo "page_token=${{ secrets.FB_TOKEN_LOI_PHAT_DAY_1_PHUT }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_LOI_PHAT_DAY_1_PHUT }}" >> $GITHUB_OUTPUT ;;
+            tien_trong_tui) echo "page_token=${{ secrets.FB_TOKEN_TIEN_TRONG_TUI }}" >> $GITHUB_OUTPUT; echo "page_id=${{ vars.FB_PAGE_ID_TIEN_TRONG_TUI }}" >> $GITHUB_OUTPUT ;;
           esac
-          if [ -z "$TOKEN" ] || [ -z "$PAGE" ]; then
-            echo "Thieu FB token hoac Page ID cho kenh $CHANNEL"
-            exit 1
-          fi
-          {
-            printf 'page_token=%s\n' "$TOKEN"
-            printf 'page_id=%s\n' "$PAGE"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Render video with narration-synced duration
-        env:
-          CHANNEL: ${{ inputs.channel }}
-          INPUT_SCRIPT: ${{ inputs.script }}
-          INPUT_VIDEO_URL: ${{ inputs.video_url }}
-        shell: bash
+      - name: Render - Ghep 3 video & khong cat tieng
         run: |
-          set -euo pipefail
-          if [ -z "$(printf '%s' "$INPUT_SCRIPT" | tr -d '[:space:]')" ]; then
-            echo "Kich ban rong."
-            exit 1
-          fi
-          if [ -z "$(printf '%s' "$INPUT_VIDEO_URL" | tr -d '[:space:]')" ]; then
-            echo "Khong co link video Pexels."
-            exit 1
-          fi
-
-          printf '%s' "$INPUT_SCRIPT" > script.txt
-          edge-tts --voice vi-VN-HoaiMyNeural --text "$(cat script.txt)" --write-media voice_raw.mp3
-
-          cp voice_raw.mp3 voice.mp3
-
-          if [ "$CHANNEL" = "viet_nam_nhin_tu_tren" ]; then
-            WIDTH=1920
-            HEIGHT=1080
-          else
-            WIDTH=1080
-            HEIGHT=1920
-          fi
-
-          printf '%s' "$INPUT_VIDEO_URL" | tr ',' '\n' > urls.txt
-          : > list.txt
+          echo '${{ inputs.script }}' > script.txt
+          edge-tts --voice vi-VN-HoaiMyNeural --text "$(cat script.txt)" --write-media voice.mp3
+          
+          echo "${{ inputs.video_url }}" | tr ',' '\n' > urls.txt
+          rm -f list.txt
           i=0
-          # FIX QUAN TRONG: Doc bang FD 3 de ffmpeg khong cuop stdin gay treo 1h
-          while IFS= read -r url <&3 || [ -n "$url" ]; do
-            url="$(printf '%s' "$url" | xargs)"
-            [ -z "$url" ] && continue
-            case "$url" in
-              https://*) ;;
-              *) echo "Bo qua URL khong phai HTTPS: $url"; continue ;;
-            esac
-            echo "Tai clip $i : $url"
-            if ! curl --fail --location --silent --show-error --retry 3 --connect-timeout 20 -A "Mozilla/5.0"               "$url" -o "clip_${i}_raw.mp4"; then
-              echo "Tai clip that bai, bo qua."
-              rm -f "clip_${i}_raw.mp4"
-              continue
-            fi
-            if ! ffprobe -v error -nostdin -select_streams v:0 -show_entries stream=codec_type               -of csv=p=0 "clip_${i}_raw.mp4" | grep -q video; then
-              echo "File tai ve khong phai video hop le, bo qua."
-              rm -f "clip_${i}_raw.mp4"
-              continue
-            fi
-            if ffmpeg -hide_banner -loglevel error -nostdin -y -i "clip_${i}_raw.mp4"               -vf "scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase,crop=${WIDTH}:${HEIGHT},fps=30,setsar=1"               -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 "clip_${i}.mp4"; then
-              printf "file '%s'\n" "clip_${i}.mp4" >> list.txt
-              i=$((i+1))
-            else
-              echo "Khong chuan hoa duoc clip, bo qua."
-              rm -f "clip_${i}.mp4"
-            fi
-          done 3< urls.txt
-
-          if [ ! -s list.txt ]; then
-            echo "Khong co clip nao hop le de render."
-            exit 1
-          fi
-
-          ffmpeg -hide_banner -loglevel error -nostdin -y -f concat -safe 0 -i list.txt             -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 bg_concat.mp4
-
-          DURATION="$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 voice.mp3 </dev/null)"
-          if [ -z "$DURATION" ] || [ "$(printf '%.0f' "$DURATION")" -lt 1 ]; then
-            echo "Khong doc duoc do dai loi thuyet minh."
-            exit 1
-          fi
-
-          ffmpeg -hide_banner -loglevel error -nostdin -y             -stream_loop -1 -i bg_concat.mp4 -i voice.mp3 -t "$DURATION"             -map 0:v:0 -map 1:a:0 -shortest             -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30             -c:a aac -b:a 128k -movflags +faststart final.mp4
-
-          test -s final.mp4
-          echo "Thoi luong thuyet minh: $DURATION giay"
-          ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 final.mp4 </dev/null
-
-      - name: Post video to the selected Facebook Page
+          for url in $(cat urls.txt); do
+            echo "Tai video $i: $url"
+            curl -L -o clip_${i}_raw.mp4 $url
+            # Chuan hoa ve 1080x1920 de ghep khong loi
+            ffmpeg -y -i clip_${i}_raw.mp4 -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920" -c:v libx264 -pix_fmt yuv420p -an clip_${i}.mp4
+            echo "file clip_${i}.mp4" >> list.txt
+            i=$((i+1))
+          done
+          
+          # Noi 3 clip lai
+          ffmpeg -y -f concat -safe 0 -i list.txt -c copy bg_concat.mp4
+          
+          # Lap lai cho du do dai giong noi
+          ffmpeg -y -stream_loop 10 -i bg_concat.mp4 -i voice.mp3 -shortest -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920" -c:a aac -c:v libx264 -pix_fmt yuv420p -max_muxing_queue_size 1024 final.mp4
+          
+      - name: Post - Cong khai cho moi nguoi xem
         env:
           PAGE_TOKEN: ${{ steps.get_token.outputs.page_token }}
           PAGE_ID: ${{ steps.get_token.outputs.page_id }}
-          CHANNEL: ${{ inputs.channel }}
-          INPUT_TITLE: ${{ inputs.title }}
-          INPUT_SCRIPT: ${{ inputs.script }}
-        shell: bash
         run: |
-          set -euo pipefail
-          python3 <<'PY'
-          import os, time, sys, requests
+          python3 << 'PY'
+          import requests, os, time, sys
 
           pid = os.environ.get("PAGE_ID", "").strip()
           token = os.environ.get("PAGE_TOKEN", "").strip()
-          title = os.environ.get("INPUT_TITLE", "").strip()
-          script = os.environ.get("INPUT_SCRIPT", "").strip()
-          channel = os.environ.get("CHANNEL", "").strip()
+          title = """${{ inputs.title }}"""
+          script = """${{ inputs.script }}"""
+          desc = f"{title}\n\n{script}\n\n#chuyentham60s"
 
-          hashtags = {
-              "chuyen_tham_60s": "#ChuyenTham60s",
-              "sao_lai_the": "#SaoLaiThe",
-              "viet_nam_nhin_tu_tren": "#VietNamNhinTuTren #DuLichVietNam #FlycamVietNam",
-              "song_khoe_sau_50": "#SongKhoeSau50",
-              "the_gioi_hoang_da_60s": "#TheGioiHoangDa60s",
-              "loi_phat_day_1_phut": "#LoiPhatDay #SongAnLac",
-              "tien_trong_tui": "#TienTrongTui #TaiChinhCaNhan",
-          }
           if not pid:
-              raise RuntimeError("Thieu FB_PAGE_ID cho kenh nay.")
+              raise RuntimeError("THIEU FB_PAGE_ID cho kenh nay.")
           if not token:
-              raise RuntimeError("Thieu FB_TOKEN cho kenh nay.")
-          if not title or not script:
-              raise RuntimeError("Thieu tieu de hoac kich ban.")
+              raise RuntimeError("THIEU FB_TOKEN cho kenh nay.")
 
-          desc = f"{title}\n\n{script}\n\n{hashtags.get(channel, '')}"
           API = "https://graph.facebook.com/v19.0"
           upload_url = f"{API}/{pid}/videos"
-          print(f"Dang video len Facebook Page {pid}: {title}")
 
+          print(f"Dang video len Facebook Page {pid}: {title}")
+          print("Bat buoc published=true va se kiem tra den khi video thuc su public.")
+
+          # 1) Upload video va yeu cau publish cong khai.
           with open("final.mp4", "rb") as f:
               r = requests.post(
                   upload_url,
-                  data={"title": title, "description": desc, "access_token": token, "published": "true"},
+                  data={
+                      "title": title,
+                      "description": desc,
+                      "access_token": token,
+                      "published": "true",
+                  },
                   files={"source": ("final.mp4", f, "video/mp4")},
                   timeout=1800,
               )
+
           print(f"Facebook upload HTTP {r.status_code}")
+          print(r.text)
+
           try:
               data = r.json()
           except ValueError:
               raise RuntimeError("Facebook tra ve khong phai JSON.")
-          if r.status_code >= 400 or "error" in data:
+
+          if r.status_code >= 400:
               raise RuntimeError(f"Facebook upload FAILED: {data}")
+
+          if "error" in data:
+              raise RuntimeError(f"Facebook upload FAILED: {data['error']}")
+
           vid = data.get("id")
           if not vid:
               raise RuntimeError(f"Khong nhan duoc Video ID tu Facebook: {data}")
 
+          print(f"Facebook da nhan video ID: {vid}")
+
+          # 2) Polling trang thai thay vi chi cho 5 giay.
+          #    Xac nhan video da duoc xu ly va published=true.
           check_url = f"{API}/{vid}"
+          max_attempts = 24
+          wait_seconds = 10
           last_data = None
-          for attempt in range(1, 31):
-              time.sleep(10)
+
+          for attempt in range(1, max_attempts + 1):
+              time.sleep(wait_seconds)
+
               check = requests.get(
                   check_url,
-                  params={"fields": "id,status,published,permalink_url", "access_token": token},
+                  params={
+                      "fields": "id,status,published,permalink_url",
+                      "access_token": token,
+                  },
                   timeout=60,
               )
-              print(f"Check {attempt}/30 - HTTP {check.status_code}")
+
+              print(f"Check {attempt}/{max_attempts} - HTTP {check.status_code}")
+              print(check.text)
+
+              if check.status_code >= 400:
+                  last_data = {"http_status": check.status_code, "body": check.text}
+                  continue
+
               try:
                   check_data = check.json()
               except ValueError:
                   last_data = {"body": check.text}
                   continue
+
               last_data = check_data
-              if check.status_code >= 400 or "error" in check_data:
+
+              if "error" in check_data:
                   continue
-              if check_data.get("published") is True:
-                  print("OK: Facebook API bao video da publish.")
+
+              published = check_data.get("published")
+              status = check_data.get("status")
+
+              if isinstance(status, dict):
+                  video_status = (
+                      status.get("video_status")
+                      or status.get("processing_phase")
+                      or status.get("status")
+                      or str(status)
+                  )
+              else:
+                  video_status = status
+
+              print(f"Video status={video_status}; published={published}")
+
+              if published is True:
+                  print("OK: VIDEO DA DUOC PUBLISH CONG KHAI.")
                   if check_data.get("permalink_url"):
-                      print("URL:", check_data["permalink_url"])
+                      print(f"URL: {check_data['permalink_url']}")
                   sys.exit(0)
+
           raise RuntimeError(
-              "Khong xac nhan duoc video da publish sau 5 phut. "
-              f"Video ID={vid}; phan hoi cuoi={last_data}"
+              "VIDEO KHONG XAC NHAN DUOC LA CONG KHAI SAU THOI GIAN CHO. "
+              f"Video ID={vid}; last_response={last_data}"
           )
           PY
