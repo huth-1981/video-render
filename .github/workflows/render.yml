@@ -99,15 +99,11 @@ jobs:
             exit 1
           fi
 
-          # Luu noi dung qua bien moi truong, khong chen truc tiep vao lenh shell.
           printf '%s' "$INPUT_SCRIPT" > script.txt
           edge-tts --voice vi-VN-HoaiMyNeural --text "$(cat script.txt)" --write-media voice_raw.mp3
 
-          # Giu nguyen audio goc de tranh bo loc cat nham cac chu cuoi nho/nhanh.
-          # Neu TTS co mot chut im lang cuoi, giu lai van an toan hon cat mat loi.
           cp voice_raw.mp3 voice.mp3
 
-          # Flycam can khung ngang; cac kenh short khac dung khung doc.
           if [ "$CHANNEL" = "viet_nam_nhin_tu_tren" ]; then
             WIDTH=1920
             HEIGHT=1080
@@ -119,60 +115,52 @@ jobs:
           printf '%s' "$INPUT_VIDEO_URL" | tr ',' '\n' > urls.txt
           : > list.txt
           i=0
-          while IFS= read -r url || [ -n "$url" ]; do
+          # FIX QUAN TRONG: Doc bang FD 3 de ffmpeg khong cuop stdin gay treo 1h
+          while IFS= read -r url <&3 || [ -n "$url" ]; do
             url="$(printf '%s' "$url" | xargs)"
             [ -z "$url" ] && continue
             case "$url" in
               https://*) ;;
-              *) echo "Bo qua URL khong phai HTTPS"; continue ;;
+              *) echo "Bo qua URL khong phai HTTPS: $url"; continue ;;
             esac
-            echo "Tai clip $i"
-            if ! curl --fail --location --silent --show-error --retry 3 --connect-timeout 20 \
-              "$url" -o "clip_${i}_raw.mp4"; then
+            echo "Tai clip $i : $url"
+            if ! curl --fail --location --silent --show-error --retry 3 --connect-timeout 20 -A "Mozilla/5.0"               "$url" -o "clip_${i}_raw.mp4"; then
               echo "Tai clip that bai, bo qua."
               rm -f "clip_${i}_raw.mp4"
               continue
             fi
-            if ! ffprobe -v error -select_streams v:0 -show_entries stream=codec_type \
-              -of csv=p=0 "clip_${i}_raw.mp4" | grep -q video; then
+            if ! ffprobe -v error -nostdin -select_streams v:0 -show_entries stream=codec_type               -of csv=p=0 "clip_${i}_raw.mp4" | grep -q video; then
               echo "File tai ve khong phai video hop le, bo qua."
               rm -f "clip_${i}_raw.mp4"
               continue
             fi
-            if ffmpeg -hide_banner -loglevel error -y -i "clip_${i}_raw.mp4" \
-              -vf "scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase,crop=${WIDTH}:${HEIGHT},fps=30,setsar=1" \
-              -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 "clip_${i}.mp4"; then
+            if ffmpeg -hide_banner -loglevel error -nostdin -y -i "clip_${i}_raw.mp4"               -vf "scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase,crop=${WIDTH}:${HEIGHT},fps=30,setsar=1"               -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 "clip_${i}.mp4"; then
               printf "file '%s'\n" "clip_${i}.mp4" >> list.txt
               i=$((i+1))
             else
               echo "Khong chuan hoa duoc clip, bo qua."
+              rm -f "clip_${i}.mp4"
             fi
-          done < urls.txt
+          done 3< urls.txt
 
           if [ ! -s list.txt ]; then
             echo "Khong co clip nao hop le de render."
             exit 1
           fi
 
-          ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i list.txt \
-            -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 bg_concat.mp4
+          ffmpeg -hide_banner -loglevel error -nostdin -y -f concat -safe 0 -i list.txt             -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 bg_concat.mp4
 
-          DURATION="$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 voice.mp3)"
+          DURATION="$(ffprobe -v error -nostdin -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 voice.mp3)"
           if [ -z "$DURATION" ] || [ "$(printf '%.0f' "$DURATION")" -lt 1 ]; then
             echo "Khong doc duoc do dai loi thuyet minh."
             exit 1
           fi
 
-          # Lap hinh nen den dung het loi thuyet minh, khong de khoang trong dai phia sau.
-          ffmpeg -hide_banner -loglevel error -y \
-            -stream_loop -1 -i bg_concat.mp4 -i voice.mp3 -t "$DURATION" \
-            -map 0:v:0 -map 1:a:0 -shortest \
-            -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 \
-            -c:a aac -b:a 128k -movflags +faststart final.mp4
+          ffmpeg -hide_banner -loglevel error -nostdin -y             -stream_loop -1 -i bg_concat.mp4 -i voice.mp3 -t "$DURATION"             -map 0:v:0 -map 1:a:0 -shortest             -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30             -c:a aac -b:a 128k -movflags +faststart final.mp4
 
           test -s final.mp4
           echo "Thoi luong thuyet minh: $DURATION giay"
-          ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 final.mp4
+          ffprobe -v error -nostdin -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 final.mp4
 
       - name: Post video to the selected Facebook Page
         env:
