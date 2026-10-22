@@ -42,7 +42,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install edge-tts requests
 
-      - name: Select Facebook Page credentials
+      - name: Select 【entity-Facebook¦canonical_name=Facebook】 Page credentials
         id: get_token
         env:
           CHANNEL: ${{ inputs.channel }}
@@ -101,7 +101,6 @@ jobs:
 
           printf '%s' "$INPUT_SCRIPT" > script.txt
           edge-tts --voice vi-VN-HoaiMyNeural --text "$(cat script.txt)" --write-media voice_raw.mp3
-
           cp voice_raw.mp3 voice.mp3
 
           if [ "$CHANNEL" = "viet_nam_nhin_tu_tren" ]; then
@@ -115,7 +114,6 @@ jobs:
           printf '%s' "$INPUT_VIDEO_URL" | tr ',' '\n' > urls.txt
           : > list.txt
           i=0
-          # FIX QUAN TRONG: Doc bang FD 3 de ffmpeg khong cuop stdin gay treo 1h
           while IFS= read -r url <&3 || [ -n "$url" ]; do
             url="$(printf '%s' "$url" | xargs)"
             [ -z "$url" ] && continue
@@ -124,17 +122,21 @@ jobs:
               *) echo "Bo qua URL khong phai HTTPS: $url"; continue ;;
             esac
             echo "Tai clip $i : $url"
-            if ! curl --fail --location --silent --show-error --retry 3 --connect-timeout 20 -A "Mozilla/5.0"               "$url" -o "clip_${i}_raw.mp4"; then
+            if ! curl --fail --location --silent --show-error --retry 3 --connect-timeout 20 -A "Mozilla/5.0" \
+              "$url" -o "clip_${i}_raw.mp4"; then
               echo "Tai clip that bai, bo qua."
               rm -f "clip_${i}_raw.mp4"
               continue
             fi
-            if ! ffprobe -v error -nostdin -select_streams v:0 -show_entries stream=codec_type               -of csv=p=0 "clip_${i}_raw.mp4" | grep -q video; then
+            if ! ffprobe -v error -nostdin -select_streams v:0 -show_entries stream=codec_type \
+              -of csv=p=0 "clip_${i}_raw.mp4" | grep -q video; then
               echo "File tai ve khong phai video hop le, bo qua."
               rm -f "clip_${i}_raw.mp4"
               continue
             fi
-            if ffmpeg -hide_banner -loglevel error -nostdin -y -i "clip_${i}_raw.mp4"               -vf "scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase,crop=${WIDTH}:${HEIGHT},fps=30,setsar=1"               -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 "clip_${i}.mp4"; then
+            if ffmpeg -hide_banner -loglevel error -nostdin -y -i "clip_${i}_raw.mp4" \
+              -vf "scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase,crop=${WIDTH}:${HEIGHT},fps=30,setsar=1" \
+              -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 "clip_${i}.mp4"; then
               printf "file '%s'\n" "clip_${i}.mp4" >> list.txt
               i=$((i+1))
             else
@@ -148,7 +150,8 @@ jobs:
             exit 1
           fi
 
-          ffmpeg -hide_banner -loglevel error -nostdin -y -f concat -safe 0 -i list.txt             -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 bg_concat.mp4
+          ffmpeg -hide_banner -loglevel error -nostdin -y -f concat -safe 0 -i list.txt \
+            -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 bg_concat.mp4
 
           DURATION="$(ffprobe -v error -nostdin -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 voice.mp3)"
           if [ -z "$DURATION" ] || [ "$(printf '%.0f' "$DURATION")" -lt 1 ]; then
@@ -156,7 +159,11 @@ jobs:
             exit 1
           fi
 
-          ffmpeg -hide_banner -loglevel error -nostdin -y             -stream_loop -1 -i bg_concat.mp4 -i voice.mp3 -t "$DURATION"             -map 0:v:0 -map 1:a:0 -shortest             -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30             -c:a aac -b:a 128k -movflags +faststart final.mp4
+          ffmpeg -hide_banner -loglevel error -nostdin -y \
+            -stream_loop -1 -i bg_concat.mp4 -i voice.mp3 -t "$DURATION" \
+            -map 0:v:0 -map 1:a:0 -shortest \
+            -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 \
+            -c:a aac -b:a 128k -movflags +faststart final.mp4
 
           test -s final.mp4
           echo "Thoi luong thuyet minh: $DURATION giay"
@@ -174,13 +181,11 @@ jobs:
           set -euo pipefail
           python3 <<'PY'
           import os, time, sys, requests
-
           pid = os.environ.get("PAGE_ID", "").strip()
           token = os.environ.get("PAGE_TOKEN", "").strip()
           title = os.environ.get("INPUT_TITLE", "").strip()
           script = os.environ.get("INPUT_SCRIPT", "").strip()
           channel = os.environ.get("CHANNEL", "").strip()
-
           hashtags = {
               "chuyen_tham_60s": "#ChuyenTham60s",
               "sao_lai_the": "#SaoLaiThe",
@@ -196,12 +201,10 @@ jobs:
               raise RuntimeError("Thieu FB_TOKEN cho kenh nay.")
           if not title or not script:
               raise RuntimeError("Thieu tieu de hoac kich ban.")
-
           desc = f"{title}\n\n{script}\n\n{hashtags.get(channel, '')}"
           API = "https://graph.facebook.com/v19.0"
           upload_url = f"{API}/{pid}/videos"
           print(f"Dang video len Facebook Page {pid}: {title}")
-
           with open("final.mp4", "rb") as f:
               r = requests.post(
                   upload_url,
@@ -219,7 +222,6 @@ jobs:
           vid = data.get("id")
           if not vid:
               raise RuntimeError(f"Khong nhan duoc Video ID tu Facebook: {data}")
-
           check_url = f"{API}/{vid}"
           last_data = None
           for attempt in range(1, 31):
