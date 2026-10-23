@@ -430,13 +430,46 @@ jobs:
             'job_status': status,
             'github_run_url': os.environ.get('RUN_URL', ''),
             'facebook_video_id': os.environ.get('FACEBOOK_VIDEO_ID', ''),
-            'permalink_url': os.environ.get('PERMALINK_URL', ''),
-            'failure_reason': '' if status == 'success' else 'GitHub Actions job status: ' + status
-                      }
+                  - name: Send final result back to n8n
+        if: always()
+        env:
+          CALLBACK_URL: ${{ secrets.N8N_CALLBACK_URL }}
+          CALLBACK_TOKEN: ${{ secrets.N8N_CALLBACK_TOKEN }}
+          JOB_ID: ${{ inputs.job_id }}
+          JOB_STATUS: ${{ job.status }}
+          CHANNEL: ${{ inputs.channel }}
+          INPUT_TITLE: ${{ inputs.title }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          FACEBOOK_VIDEO_ID: ${{ steps.publish.outputs.facebook_video_id }}
+          PERMALINK_URL: ${{ steps.publish.outputs.permalink_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -z "$CALLBACK_URL" ] || [ -z "$CALLBACK_TOKEN" ]; then
+            echo "Callback not configured; skipping n8n status update."
+            exit 0
+          fi
+
+          python3 <<'PY'
+          import os, requests
+
+          status = os.environ.get('JOB_STATUS', 'failure').lower()
+
+          payload = {
+              'job_id': os.environ.get('JOB_ID', '').strip(),
+              'channel': os.environ.get('CHANNEL', '').strip(),
+              'title': os.environ.get('INPUT_TITLE', '').strip(),
+              'job_status': status,
+              'github_run_url': os.environ.get('RUN_URL', ''),
+              'facebook_video_id': os.environ.get('FACEBOOK_VIDEO_ID', ''),
+              'permalink_url': os.environ.get('PERMALINK_URL', ''),
+              'failure_reason': '' if status == 'success' else 'GitHub Actions job status: ' + status,
+          }
 
           if not payload['job_id']:
-            print('No job_id supplied; callback cannot match n8n registry row. Skipping.')
-            raise SystemExit(0)
+              print('No job_id supplied; callback cannot match n8n registry row. Skipping.')
+              raise SystemExit(0)
 
           r = requests.post(
               os.environ['CALLBACK_URL'],
@@ -448,7 +481,6 @@ jobs:
           print('n8n callback HTTP', r.status_code)
 
           if r.status_code >= 300:
-            print(r.text[:500])
-            raise SystemExit(1)
+              print(r.text[:500])
+              raise SystemExit(1)
           PY
-
