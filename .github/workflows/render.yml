@@ -161,7 +161,7 @@ jobs:
           : > list.txt
           i=0
 
-          while IFS= read -r url || [ -n "$url" ]; do
+          while IFS= read -r url <&3 || [ -n "$url" ]; do
             url="$(printf '%s' "$url" | xargs)"
             [ -z "$url" ] && continue
 
@@ -186,7 +186,7 @@ jobs:
               continue
             fi
 
-            if ffmpeg -hide_banner -loglevel error -y -i "clip_${i}_raw.mp4" \
+            if ffmpeg -hide_banner -loglevel error -nostdin -y -i "clip_${i}_raw.mp4" \
               -vf "scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase,crop=${WIDTH}:${HEIGHT},fps=30,setsar=1" \
               -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 "clip_${i}.mp4"; then
               printf "file '%s'\n" "clip_${i}.mp4" >> list.txt
@@ -194,14 +194,14 @@ jobs:
             else
               echo "Khong chuan hoa duoc clip, bo qua."
             fi
-          done < urls.txt
+          done 3< urls.txt
 
           if [ ! -s list.txt ]; then
             echo "Khong co clip nao hop le de render."
             exit 1
           fi
 
-          ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i list.txt \
+          ffmpeg -hide_banner -loglevel error -nostdin -y -f concat -safe 0 -i list.txt \
             -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 bg_concat.mp4
 
           DURATION="$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 voice.mp3)"
@@ -211,7 +211,7 @@ jobs:
             exit 1
           fi
 
-          ffmpeg -hide_banner -loglevel error -y \
+          ffmpeg -hide_banner -loglevel error -nostdin -y \
             -stream_loop -1 -i bg_concat.mp4 -i voice.mp3 -t "$DURATION" \
             -map 0:v:0 -map 1:a:0 -shortest \
             -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 \
