@@ -432,3 +432,23 @@ jobs:
             'facebook_video_id': os.environ.get('FACEBOOK_VIDEO_ID', ''),
             'permalink_url': os.environ.get('PERMALINK_URL', ''),
             'failure_reason': '' if status == 'success' else 'GitHub Actions job status: ' + status
+                      }
+
+          if not payload['job_id']:
+            print('No job_id supplied; callback cannot match n8n registry row. Skipping.')
+            raise SystemExit(0)
+
+          r = requests.post(
+              os.environ['CALLBACK_URL'],
+              json=payload,
+              headers={'X-Callback-Token': os.environ['CALLBACK_TOKEN']},
+              timeout=30,
+          )
+
+          print('n8n callback HTTP', r.status_code)
+
+          if r.status_code >= 300:
+            print(r.text[:500])
+            raise SystemExit(1)
+          PY
+
