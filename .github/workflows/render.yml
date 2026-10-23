@@ -53,7 +53,6 @@ jobs:
         id: get_token
         env:
           CHANNEL: ${{ inputs.channel }}
-          # Cac kenh cu - giu nguyen ten cu
           TOKEN_CHUYEN_THAM: ${{ secrets.FB_TOKEN_CHUYEN_THAM_60S }}
           PAGE_CHUYEN_THAM: ${{ vars.FB_PAGE_ID_CHUYEN_THAM_60S }}
           TOKEN_SAO_LAI_THE: ${{ secrets.FB_TOKEN_SAO_LAI_THE }}
@@ -68,7 +67,6 @@ jobs:
           PAGE_LOI_PHAT: ${{ vars.FB_PAGE_ID_LOI_PHAT_DAY_1_PHUT }}
           TOKEN_TIEN: ${{ secrets.FB_TOKEN_TIEN_TRONG_TUI }}
           PAGE_TIEN: ${{ vars.FB_PAGE_ID_TIEN_TRONG_TUI }}
-          # 3 kenh moi bi loi - dung dung ten nhu trong anh cua ban
           TOKEN_SU_KE: ${{ secrets.FB_PAGE_TOKEN_SU_KE_TRONG_60_GIAY }}
           PAGE_SU_KE: ${{ vars.FB_PAGE_ID_SU_KE_TRONG_60_GIAY }}
           TOKEN_TGKD: ${{ secrets.FB_PAGE_TOKEN_THE_GIOI_KY_DIEU }}
@@ -91,23 +89,13 @@ jobs:
             phat_minh_doi_doi) TOKEN="$TOKEN_PMDD"; PAGE="$PAGE_PMDD" ;;
             *) echo "Kenh khong hop le: $CHANNEL"; exit 1 ;;
           esac
-          echo "DEBUG Channel=$CHANNEL | TOKEN_len=${#TOKEN} | PAGE_ID=$PAGE"
-          if [ -z "$TOKEN" ]; then
-            echo "-> Loi: chua co Secret cho kenh $CHANNEL"
-            echo "Cac secret hien co cua ban: FB_PAGE_TOKEN_SU_KE_TRONG_60_GIAY, FB_PAGE_TOKEN_THE_GIOI_KY_DIEU, FB_PAGE_TOKEN_NHUNG_PHAT_MINH_DOI_DOI"
-          fi
-          if [ -z "$PAGE" ]; then
-            echo "-> Loi: chua co Variable PAGE_ID cho kenh $CHANNEL"
-          fi
           if [ -z "$TOKEN" ] || [ -z "$PAGE" ]; then
             echo "Thieu FB token hoac Page ID cho kenh $CHANNEL"
             exit 1
           fi
           {
-            printf 'page_token=%s
-' "$TOKEN"
-            printf 'page_id=%s
-' "$PAGE"
+            printf 'page_token=%s\n' "$TOKEN"
+            printf 'page_id=%s\n' "$PAGE"
           } >> "$GITHUB_OUTPUT"
 
       - name: Render video with narration-synced duration
@@ -358,4 +346,3 @@ jobs:
             print(r.text[:500])
             raise SystemExit(1)
           PY
-
