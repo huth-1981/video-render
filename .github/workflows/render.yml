@@ -15,10 +15,8 @@ on:
           - the_gioi_hoang_da_60s
           - loi_phat_day_1_phut
           - tien_trong_tui
-          - su_ke_60s
           - su_ke_trong_60_giay
           - the_gioi_ky_dieu
-          - phat_minh_doi_doi
           - nhung_phat_minh_doi_doi
       script:
         description: 'Noi dung kich ban'
@@ -86,9 +84,9 @@ jobs:
             the_gioi_hoang_da_60s) TOKEN="$TOKEN_HOANG_DA"; PAGE="$PAGE_HOANG_DA" ;;
             loi_phat_day_1_phut) TOKEN="$TOKEN_LOI_PHAT"; PAGE="$PAGE_LOI_PHAT" ;;
             tien_trong_tui) TOKEN="$TOKEN_TIEN"; PAGE="$PAGE_TIEN" ;;
-            su_ke_60s|su_ke_trong_60_giay) TOKEN="$TOKEN_SU_KE"; PAGE="$PAGE_SU_KE" ;;
+            su_ke_trong_60_giay) TOKEN="$TOKEN_SU_KE"; PAGE="$PAGE_SU_KE" ;;
             the_gioi_ky_dieu) TOKEN="$TOKEN_TGKD"; PAGE="$PAGE_TGKD" ;;
-            phat_minh_doi_doi|nhung_phat_minh_doi_doi) TOKEN="$TOKEN_PMDD"; PAGE="$PAGE_PMDD" ;;
+            nhung_phat_minh_doi_doi) TOKEN="$TOKEN_PMDD"; PAGE="$PAGE_PMDD" ;;
             *) echo "Kenh khong hop le: $CHANNEL"; exit 1 ;;
           esac
           if [ -z "$TOKEN" ] || [ -z "$PAGE" ]; then
@@ -110,7 +108,7 @@ jobs:
         run: |
           set -euo pipefail
           case "$CHANNEL" in
-            chuyen_tham_60s|sao_lai_the|viet_nam_nhin_tu_tren|song_khoe_sau_50|the_gioi_hoang_da_60s|loi_phat_day_1_phut|tien_trong_tui|su_ke_60s|su_ke_trong_60_giay|the_gioi_ky_dieu|phat_minh_doi_doi|nhung_phat_minh_doi_doi) ;;
+            chuyen_tham_60s|sao_lai_the|viet_nam_nhin_tu_tren|song_khoe_sau_50|the_gioi_hoang_da_60s|loi_phat_day_1_phut|tien_trong_tui|su_ke_trong_60_giay|the_gioi_ky_dieu|nhung_phat_minh_doi_doi) ;;
             *) echo "Kenh khong hop le"; exit 1 ;;
           esac
           if [ -z "$(printf '%s' "$INPUT_SCRIPT" | tr -d '[:space:]')" ]; then
@@ -172,7 +170,7 @@ jobs:
               rm -f "clip_${i}_raw.mp4"
               continue
             fi
-            if ffmpeg -nostdin -hide_banner -loglevel error -y -i "clip_${i}_raw.mp4" \
+            if ffmpeg -hide_banner -loglevel error -y -i "clip_${i}_raw.mp4" \
               -vf "scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase,crop=${WIDTH}:${HEIGHT},fps=30,setsar=1" \
               -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 "clip_${i}.mp4"; then
               printf "file '%s'\n" "clip_${i}.mp4" >> list.txt
@@ -187,7 +185,7 @@ jobs:
             exit 1
           fi
 
-          ffmpeg -nostdin -hide_banner -loglevel error -y -f concat -safe 0 -i list.txt \
+          ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i list.txt \
             -an -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 bg_concat.mp4
 
           DURATION="$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 voice.mp3)"
@@ -197,7 +195,7 @@ jobs:
           fi
 
           # Lap hinh nen den dung het loi thuyet minh, khong de khoang trong dai phia sau.
-          ffmpeg -nostdin -hide_banner -loglevel error -y \
+          ffmpeg -hide_banner -loglevel error -y \
             -stream_loop -1 -i bg_concat.mp4 -i voice.mp3 -t "$DURATION" \
             -map 0:v:0 -map 1:a:0 -shortest \
             -c:v libx264 -preset veryfast -pix_fmt yuv420p -r 30 \
