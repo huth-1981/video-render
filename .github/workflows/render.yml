@@ -257,14 +257,30 @@ jobs:
                   timeout=1800,
               )
           print(f"Facebook upload HTTP {r.status_code}")
+          print("VIDEO SIZE:", os.path.getsize("final.mp4"), "bytes")
+          # In thong tin file de chan doan loi upload; khong in PAGE_TOKEN.
+          print("FACEBOOK RAW RESPONSE:", r.text[:3000])
           try:
               data = r.json()
           except ValueError:
-              raise RuntimeError("Facebook tra ve khong phai JSON.")
+              raise RuntimeError(
+                  f"Facebook tra ve khong phai JSON (HTTP {r.status_code}): {r.text[:1000]}"
+              )
           if r.status_code >= 400 or "error" in data:
               err = data.get("error", {}) if isinstance(data, dict) else {}
-              msg = err.get("message", "API error") if isinstance(err, dict) else "API error"
-              raise RuntimeError(f"Facebook upload FAILED (HTTP {r.status_code}): {str(msg)[:300]}")
+              if isinstance(err, dict):
+                  msg = err.get("message", "API error")
+                  code = err.get("code", "")
+                  subcode = err.get("error_subcode", "")
+                  err_type = err.get("type", "")
+                  raise RuntimeError(
+                      f"Facebook upload FAILED (HTTP {r.status_code}; "
+                      f"type={err_type}; code={code}; subcode={subcode}): "
+                      f"{str(msg)[:1000]}"
+                  )
+              raise RuntimeError(
+                  f"Facebook upload FAILED (HTTP {r.status_code}): {str(data)[:1000]}"
+              )
           vid = data.get("id")
           if not vid:
               raise RuntimeError(f"Khong nhan duoc Video ID tu Facebook: {data}")
