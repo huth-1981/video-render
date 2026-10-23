@@ -16,8 +16,10 @@ on:
           - loi_phat_day_1_phut
           - tien_trong_tui
           - su_ke_60s
+          - su_ke_trong_60_giay
           - the_gioi_ky_dieu
           - phat_minh_doi_doi
+          - nhung_phat_minh_doi_doi
       script:
         description: 'Noi dung kich ban'
         required: true
@@ -84,9 +86,9 @@ jobs:
             the_gioi_hoang_da_60s) TOKEN="$TOKEN_HOANG_DA"; PAGE="$PAGE_HOANG_DA" ;;
             loi_phat_day_1_phut) TOKEN="$TOKEN_LOI_PHAT"; PAGE="$PAGE_LOI_PHAT" ;;
             tien_trong_tui) TOKEN="$TOKEN_TIEN"; PAGE="$PAGE_TIEN" ;;
-            su_ke_60s) TOKEN="$TOKEN_SU_KE"; PAGE="$PAGE_SU_KE" ;;
+            su_ke_60s|su_ke_trong_60_giay) TOKEN="$TOKEN_SU_KE"; PAGE="$PAGE_SU_KE" ;;
             the_gioi_ky_dieu) TOKEN="$TOKEN_TGKD"; PAGE="$PAGE_TGKD" ;;
-            phat_minh_doi_doi) TOKEN="$TOKEN_PMDD"; PAGE="$PAGE_PMDD" ;;
+            phat_minh_doi_doi|nhung_phat_minh_doi_doi) TOKEN="$TOKEN_PMDD"; PAGE="$PAGE_PMDD" ;;
             *) echo "Kenh khong hop le: $CHANNEL"; exit 1 ;;
           esac
           if [ -z "$TOKEN" ] || [ -z "$PAGE" ]; then
@@ -108,7 +110,7 @@ jobs:
         run: |
           set -euo pipefail
           case "$CHANNEL" in
-            chuyen_tham_60s|sao_lai_the|viet_nam_nhin_tu_tren|song_khoe_sau_50|the_gioi_hoang_da_60s|loi_phat_day_1_phut|tien_trong_tui|su_ke_60s|the_gioi_ky_dieu|phat_minh_doi_doi) ;;
+            chuyen_tham_60s|sao_lai_the|viet_nam_nhin_tu_tren|song_khoe_sau_50|the_gioi_hoang_da_60s|loi_phat_day_1_phut|tien_trong_tui|su_ke_60s|su_ke_trong_60_giay|the_gioi_ky_dieu|phat_minh_doi_doi|nhung_phat_minh_doi_doi) ;;
             *) echo "Kenh khong hop le"; exit 1 ;;
           esac
           if [ -z "$(printf '%s' "$INPUT_SCRIPT" | tr -d '[:space:]')" ]; then
