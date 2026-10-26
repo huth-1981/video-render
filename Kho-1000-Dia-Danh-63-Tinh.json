@@ -13,8 +13,8 @@
       "tra su cajuput forest"
     ],
     "pexels_keyword_old": "rừng tràm trà sư an giang vietnam flycam",
-    "pexels_keyword_v2": "rung tram tra su an giang vietnam forest swamp aerial",
-    "pixabay_keyword": "rung tram tra su vietnam forest swamp aerial",
+    "pexels_keyword_v2": "cajuput melaleuca flooded forest swamp aerial vietnam",
+    "pixabay_keyword": "cajuput melaleuca swamp forest vietnam",
     "search_tier": "hard"
   },
   {
@@ -25,13 +25,13 @@
     "name_en": "mieu ba chua xu nui sam",
     "caption_template": "Miếu Bà Chúa Xứ Núi Sam - An Giang",
     "scene_type": "mountains",
-    "scene_keyword": "mountains aerial",
+    "scene_keyword": "temple aerial",
     "alias_en": [
       "mieu ba chua xu nui sam"
     ],
     "pexels_keyword_old": "miếu bà chúa xứ núi sam an giang vietnam flycam",
-    "pexels_keyword_v2": "mieu ba chua xu nui sam an giang vietnam mountains aerial",
-    "pixabay_keyword": "mieu ba chua xu nui sam vietnam mountains aerial",
+    "pexels_keyword_v2": "temple mountain aerial vietnam buddhist",
+    "pixabay_keyword": "buddhist temple mountain vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -81,8 +81,8 @@
       "cho noi long xuyen"
     ],
     "pexels_keyword_old": "chợ nổi long xuyên an giang vietnam flycam",
-    "pexels_keyword_v2": "cho noi long xuyen an giang vietnam river village aerial",
-    "pixabay_keyword": "cho noi long xuyen vietnam river village aerial",
+    "pexels_keyword_v2": "floating market mekong river boats aerial vietnam",
+    "pixabay_keyword": "floating market vietnam river",
     "search_tier": "hard"
   },
   {
@@ -178,13 +178,13 @@
     "name_en": "dong cao",
     "caption_template": "Đồng Cao - Bắc Giang",
     "scene_type": "vietnam",
-    "scene_keyword": "vietnam landscape aerial",
+    "scene_keyword": "mountains aerial",
     "alias_en": [
       "dong cao"
     ],
     "pexels_keyword_old": "đồng cao bắc giang vietnam flycam",
-    "pexels_keyword_v2": "dong cao bac giang vietnam vietnam landscape aerial",
-    "pixabay_keyword": "dong cao vietnam vietnam landscape aerial",
+    "pexels_keyword_v2": "grassland plateau mountain aerial vietnam",
+    "pixabay_keyword": "grassland plateau vietnam aerial",
     "search_tier": "hard"
   },
   {
@@ -229,13 +229,13 @@
     "name_en": "lang tho ha",
     "caption_template": "Làng thổ hà - Bắc Giang",
     "scene_type": "vietnam",
-    "scene_keyword": "vietnam landscape aerial",
+    "scene_keyword": "river village aerial",
     "alias_en": [
       "lang tho ha"
     ],
     "pexels_keyword_old": "làng thổ hà bắc giang vietnam flycam",
-    "pexels_keyword_v2": "lang tho ha bac giang vietnam vietnam landscape aerial",
-    "pixabay_keyword": "lang tho ha vietnam vietnam landscape aerial",
+    "pexels_keyword_v2": "ancient pottery village vietnam aerial",
+    "pixabay_keyword": "vietnam pottery village",
     "search_tier": "hard"
   },
   {
@@ -15378,8 +15378,8 @@
       "canh dong dak nong"
     ],
     "pexels_keyword_old": "rice field Đắk Nông vietnam flycam",
-    "pexels_keyword_v2": "canh dong dak nong dak nong vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong dak nong vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "dak nong rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "dak nong rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15395,8 +15395,8 @@
       "canh dong dien bien"
     ],
     "pexels_keyword_old": "rice field Điện Biên vietnam flycam",
-    "pexels_keyword_v2": "canh dong dien bien dien bien vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong dien bien vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "dien bien rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "dien bien rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15412,8 +15412,8 @@
       "canh dong dong nai"
     ],
     "pexels_keyword_old": "rice field Đồng Nai vietnam flycam",
-    "pexels_keyword_v2": "canh dong dong nai dong nai vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong dong nai vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "dong nai rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "dong nai rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15429,8 +15429,8 @@
       "canh dong dong thap"
     ],
     "pexels_keyword_old": "rice field Đồng Tháp vietnam flycam",
-    "pexels_keyword_v2": "canh dong dong thap dong thap vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong dong thap vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "dong thap rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "dong thap rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15446,8 +15446,8 @@
       "canh dong gia lai"
     ],
     "pexels_keyword_old": "rice field Gia Lai vietnam flycam",
-    "pexels_keyword_v2": "canh dong gia lai gia lai vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong gia lai vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "gia lai rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "gia lai rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15463,8 +15463,8 @@
       "canh dong ha giang"
     ],
     "pexels_keyword_old": "rice field Hà Giang vietnam flycam",
-    "pexels_keyword_v2": "canh dong ha giang ha giang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ha giang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ha giang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ha giang rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15480,8 +15480,8 @@
       "canh dong ha nam"
     ],
     "pexels_keyword_old": "rice field Hà Nam vietnam flycam",
-    "pexels_keyword_v2": "canh dong ha nam ha nam vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ha nam vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ha nam rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ha nam rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15497,8 +15497,8 @@
       "canh dong ha noi"
     ],
     "pexels_keyword_old": "rice field Hà Nội vietnam flycam",
-    "pexels_keyword_v2": "canh dong ha noi ha noi vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ha noi vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ha noi rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ha noi rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15514,8 +15514,8 @@
       "canh dong ha tinh"
     ],
     "pexels_keyword_old": "rice field Hà Tĩnh vietnam flycam",
-    "pexels_keyword_v2": "canh dong ha tinh ha tinh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ha tinh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ha tinh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ha tinh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15531,8 +15531,8 @@
       "canh dong hai duong"
     ],
     "pexels_keyword_old": "rice field Hải Dương vietnam flycam",
-    "pexels_keyword_v2": "canh dong hai duong hai duong vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong hai duong vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "hai duong rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "hai duong rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15548,8 +15548,8 @@
       "canh dong hai phong"
     ],
     "pexels_keyword_old": "rice field Hải Phòng vietnam flycam",
-    "pexels_keyword_v2": "canh dong hai phong hai phong vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong hai phong vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "hai phong rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "hai phong rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15565,8 +15565,8 @@
       "canh dong hau giang"
     ],
     "pexels_keyword_old": "rice field Hậu Giang vietnam flycam",
-    "pexels_keyword_v2": "canh dong hau giang hau giang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong hau giang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "hau giang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "hau giang rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15582,8 +15582,8 @@
       "canh dong hoa binh"
     ],
     "pexels_keyword_old": "rice field Hòa Bình vietnam flycam",
-    "pexels_keyword_v2": "canh dong hoa binh hoa binh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong hoa binh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "hoa binh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "hoa binh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15599,8 +15599,8 @@
       "canh dong hung yen"
     ],
     "pexels_keyword_old": "rice field Hưng Yên vietnam flycam",
-    "pexels_keyword_v2": "canh dong hung yen hung yen vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong hung yen vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "hung yen rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "hung yen rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15616,8 +15616,8 @@
       "canh dong khanh hoa"
     ],
     "pexels_keyword_old": "rice field Khánh Hòa vietnam flycam",
-    "pexels_keyword_v2": "canh dong khanh hoa khanh hoa vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong khanh hoa vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "khanh hoa rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "khanh hoa rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15633,8 +15633,8 @@
       "canh dong kien giang"
     ],
     "pexels_keyword_old": "rice field Kiên Giang vietnam flycam",
-    "pexels_keyword_v2": "canh dong kien giang kien giang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong kien giang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "kien giang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "kien giang rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15650,8 +15650,8 @@
       "canh dong kon tum"
     ],
     "pexels_keyword_old": "rice field Kon Tum vietnam flycam",
-    "pexels_keyword_v2": "canh dong kon tum kon tum vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong kon tum vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "kon tum rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "kon tum rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15667,8 +15667,8 @@
       "canh dong lai chau"
     ],
     "pexels_keyword_old": "rice field Lai Châu vietnam flycam",
-    "pexels_keyword_v2": "canh dong lai chau lai chau vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong lai chau vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "lai chau rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "lai chau rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15684,8 +15684,8 @@
       "canh dong lam dong"
     ],
     "pexels_keyword_old": "rice field Lâm Đồng vietnam flycam",
-    "pexels_keyword_v2": "canh dong lam dong lam dong vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong lam dong vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "lam dong rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "lam dong rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15701,8 +15701,8 @@
       "canh dong lang son"
     ],
     "pexels_keyword_old": "rice field Lạng Sơn vietnam flycam",
-    "pexels_keyword_v2": "canh dong lang son lang son vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong lang son vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "lang son rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "lang son rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15718,8 +15718,8 @@
       "canh dong lao cai"
     ],
     "pexels_keyword_old": "rice field Lào Cai vietnam flycam",
-    "pexels_keyword_v2": "canh dong lao cai lao cai vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong lao cai vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "lao cai rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "lao cai rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15735,8 +15735,8 @@
       "canh dong long an"
     ],
     "pexels_keyword_old": "rice field Long An vietnam flycam",
-    "pexels_keyword_v2": "canh dong long an long an vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong long an vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "long an rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "long an rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15752,8 +15752,8 @@
       "canh dong nam dinh"
     ],
     "pexels_keyword_old": "rice field Nam Định vietnam flycam",
-    "pexels_keyword_v2": "canh dong nam dinh nam dinh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong nam dinh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "nam dinh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "nam dinh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15769,8 +15769,8 @@
       "canh dong nghe an"
     ],
     "pexels_keyword_old": "rice field Nghệ An vietnam flycam",
-    "pexels_keyword_v2": "canh dong nghe an nghe an vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong nghe an vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "nghe an rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "nghe an rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15786,8 +15786,8 @@
       "canh dong ninh binh"
     ],
     "pexels_keyword_old": "rice field Ninh Bình vietnam flycam",
-    "pexels_keyword_v2": "canh dong ninh binh ninh binh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ninh binh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ninh binh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ninh binh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15803,8 +15803,8 @@
       "canh dong ninh thuan"
     ],
     "pexels_keyword_old": "rice field Ninh Thuận vietnam flycam",
-    "pexels_keyword_v2": "canh dong ninh thuan ninh thuan vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ninh thuan vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ninh thuan rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ninh thuan rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15820,8 +15820,8 @@
       "canh dong phu tho"
     ],
     "pexels_keyword_old": "rice field Phú Thọ vietnam flycam",
-    "pexels_keyword_v2": "canh dong phu tho phu tho vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong phu tho vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "phu tho rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "phu tho rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15837,8 +15837,8 @@
       "canh dong phu yen"
     ],
     "pexels_keyword_old": "rice field Phú Yên vietnam flycam",
-    "pexels_keyword_v2": "canh dong phu yen phu yen vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong phu yen vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "phu yen rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "phu yen rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15854,8 +15854,8 @@
       "canh dong quang binh"
     ],
     "pexels_keyword_old": "rice field Quảng Bình vietnam flycam",
-    "pexels_keyword_v2": "canh dong quang binh quang binh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong quang binh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "quang binh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "quang binh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15871,8 +15871,8 @@
       "canh dong quang nam"
     ],
     "pexels_keyword_old": "rice field Quảng Nam vietnam flycam",
-    "pexels_keyword_v2": "canh dong quang nam quang nam vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong quang nam vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "quang nam rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "quang nam rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15888,8 +15888,8 @@
       "canh dong quang ngai"
     ],
     "pexels_keyword_old": "rice field Quảng Ngãi vietnam flycam",
-    "pexels_keyword_v2": "canh dong quang ngai quang ngai vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong quang ngai vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "quang ngai rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "quang ngai rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15905,8 +15905,8 @@
       "canh dong quang ninh"
     ],
     "pexels_keyword_old": "rice field Quảng Ninh vietnam flycam",
-    "pexels_keyword_v2": "canh dong quang ninh quang ninh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong quang ninh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "quang ninh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "quang ninh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15922,8 +15922,8 @@
       "canh dong quang tri"
     ],
     "pexels_keyword_old": "rice field Quảng Trị vietnam flycam",
-    "pexels_keyword_v2": "canh dong quang tri quang tri vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong quang tri vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "quang tri rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "quang tri rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15939,8 +15939,8 @@
       "canh dong soc trang"
     ],
     "pexels_keyword_old": "rice field Sóc Trăng vietnam flycam",
-    "pexels_keyword_v2": "canh dong soc trang soc trang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong soc trang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "soc trang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "soc trang rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15956,8 +15956,8 @@
       "canh dong son la"
     ],
     "pexels_keyword_old": "rice field Sơn La vietnam flycam",
-    "pexels_keyword_v2": "canh dong son la son la vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong son la vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "son la rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "son la rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15973,8 +15973,8 @@
       "canh dong tay ninh"
     ],
     "pexels_keyword_old": "rice field Tây Ninh vietnam flycam",
-    "pexels_keyword_v2": "canh dong tay ninh tay ninh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong tay ninh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "tay ninh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "tay ninh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -15990,8 +15990,8 @@
       "canh dong thai binh"
     ],
     "pexels_keyword_old": "rice field Thái Bình vietnam flycam",
-    "pexels_keyword_v2": "canh dong thai binh thai binh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong thai binh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "thai binh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "thai binh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16007,8 +16007,8 @@
       "canh dong thai nguyen"
     ],
     "pexels_keyword_old": "rice field Thái Nguyên vietnam flycam",
-    "pexels_keyword_v2": "canh dong thai nguyen thai nguyen vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong thai nguyen vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "thai nguyen rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "thai nguyen rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16024,8 +16024,8 @@
       "canh dong thanh hoa"
     ],
     "pexels_keyword_old": "rice field Thanh Hóa vietnam flycam",
-    "pexels_keyword_v2": "canh dong thanh hoa thanh hoa vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong thanh hoa vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "thanh hoa rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "thanh hoa rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16041,8 +16041,8 @@
       "canh dong thua thien hue"
     ],
     "pexels_keyword_old": "rice field Thừa Thiên Huế vietnam flycam",
-    "pexels_keyword_v2": "canh dong thua thien hue thua thien hue vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong thua thien hue vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "thua thien hue rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "thua thien hue rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16058,8 +16058,8 @@
       "canh dong tien giang"
     ],
     "pexels_keyword_old": "rice field Tiền Giang vietnam flycam",
-    "pexels_keyword_v2": "canh dong tien giang tien giang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong tien giang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "tien giang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "tien giang rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16070,13 +16070,13 @@
     "name_en": "canh dong tp. ho chi minh",
     "caption_template": "Cánh đồng TP. Hồ Chí Minh",
     "scene_type": "lake",
-    "scene_keyword": "lake mountains aerial",
+    "scene_keyword": "rice terraces aerial vietnam",
     "alias_en": [
       "canh dong tp. ho chi minh"
     ],
     "pexels_keyword_old": "rice field TP. Hồ Chí Minh vietnam flycam",
-    "pexels_keyword_v2": "canh dong tp. ho chi minh tp. ho chi minh vietnam lake mountains aerial",
-    "pixabay_keyword": "canh dong tp. ho chi minh vietnam lake mountains aerial",
+    "pexels_keyword_v2": "tp. ho chi minh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "tp. ho chi minh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16092,8 +16092,8 @@
       "canh dong tra vinh"
     ],
     "pexels_keyword_old": "rice field Trà Vinh vietnam flycam",
-    "pexels_keyword_v2": "canh dong tra vinh tra vinh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong tra vinh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "tra vinh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "tra vinh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16109,8 +16109,8 @@
       "canh dong tuyen quang"
     ],
     "pexels_keyword_old": "rice field Tuyên Quang vietnam flycam",
-    "pexels_keyword_v2": "canh dong tuyen quang tuyen quang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong tuyen quang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "tuyen quang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "tuyen quang rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16126,8 +16126,8 @@
       "canh dong vinh long"
     ],
     "pexels_keyword_old": "rice field Vĩnh Long vietnam flycam",
-    "pexels_keyword_v2": "canh dong vinh long vinh long vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong vinh long vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "vinh long rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "vinh long rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16143,8 +16143,8 @@
       "canh dong vinh phuc"
     ],
     "pexels_keyword_old": "rice field Vĩnh Phúc vietnam flycam",
-    "pexels_keyword_v2": "canh dong vinh phuc vinh phuc vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong vinh phuc vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "vinh phuc rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "vinh phuc rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16160,8 +16160,8 @@
       "canh dong yen bai"
     ],
     "pexels_keyword_old": "rice field Yên Bái vietnam flycam",
-    "pexels_keyword_v2": "canh dong yen bai yen bai vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong yen bai vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "yen bai rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "yen bai rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16177,8 +16177,8 @@
       "canh dong an giang"
     ],
     "pexels_keyword_old": "rice field An Giang vietnam flycam",
-    "pexels_keyword_v2": "canh dong an giang an giang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong an giang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "an giang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "an giang rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16195,8 +16195,8 @@
       "canh dong ba ria - vung tau"
     ],
     "pexels_keyword_old": "rice field Bà Rịa - Vũng Tàu vietnam flycam",
-    "pexels_keyword_v2": "canh dong ba ria vung tau ba ria - vung tau vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ba ria   vung tau vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ba ria - vung tau rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ba ria - vung tau rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16212,8 +16212,8 @@
       "canh dong bac giang"
     ],
     "pexels_keyword_old": "rice field Bắc Giang vietnam flycam",
-    "pexels_keyword_v2": "canh dong bac giang bac giang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong bac giang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "bac giang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "bac giang rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16229,8 +16229,8 @@
       "canh dong bac kan"
     ],
     "pexels_keyword_old": "rice field Bắc Kạn vietnam flycam",
-    "pexels_keyword_v2": "canh dong bac kan bac kan vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong bac kan vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "bac kan rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "bac kan rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16246,8 +16246,8 @@
       "canh dong bac lieu"
     ],
     "pexels_keyword_old": "rice field Bạc Liêu vietnam flycam",
-    "pexels_keyword_v2": "canh dong bac lieu bac lieu vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong bac lieu vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "bac lieu rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "bac lieu rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16263,8 +16263,8 @@
       "canh dong bac ninh"
     ],
     "pexels_keyword_old": "rice field Bắc Ninh vietnam flycam",
-    "pexels_keyword_v2": "canh dong bac ninh bac ninh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong bac ninh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "bac ninh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "bac ninh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16280,8 +16280,8 @@
       "canh dong ben tre"
     ],
     "pexels_keyword_old": "rice field Bến Tre vietnam flycam",
-    "pexels_keyword_v2": "canh dong ben tre ben tre vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ben tre vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ben tre rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ben tre rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16297,8 +16297,8 @@
       "canh dong binh dinh"
     ],
     "pexels_keyword_old": "rice field Bình Định vietnam flycam",
-    "pexels_keyword_v2": "canh dong binh dinh binh dinh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong binh dinh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "binh dinh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "binh dinh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16314,8 +16314,8 @@
       "canh dong binh duong"
     ],
     "pexels_keyword_old": "rice field Bình Dương vietnam flycam",
-    "pexels_keyword_v2": "canh dong binh duong binh duong vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong binh duong vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "binh duong rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "binh duong rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16331,8 +16331,8 @@
       "canh dong binh phuoc"
     ],
     "pexels_keyword_old": "rice field Bình Phước vietnam flycam",
-    "pexels_keyword_v2": "canh dong binh phuoc binh phuoc vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong binh phuoc vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "binh phuoc rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "binh phuoc rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16348,8 +16348,8 @@
       "canh dong binh thuan"
     ],
     "pexels_keyword_old": "rice field Bình Thuận vietnam flycam",
-    "pexels_keyword_v2": "canh dong binh thuan binh thuan vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong binh thuan vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "binh thuan rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "binh thuan rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16365,8 +16365,8 @@
       "canh dong ca mau"
     ],
     "pexels_keyword_old": "rice field Cà Mau vietnam flycam",
-    "pexels_keyword_v2": "canh dong ca mau ca mau vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ca mau vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ca mau rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ca mau rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16382,8 +16382,8 @@
       "canh dong can tho"
     ],
     "pexels_keyword_old": "rice field Cần Thơ vietnam flycam",
-    "pexels_keyword_v2": "canh dong can tho can tho vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong can tho vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "can tho rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "can tho rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16399,8 +16399,8 @@
       "canh dong cao bang"
     ],
     "pexels_keyword_old": "rice field Cao Bằng vietnam flycam",
-    "pexels_keyword_v2": "canh dong cao bang cao bang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong cao bang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "cao bang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "cao bang rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16416,8 +16416,8 @@
       "canh dong da nang"
     ],
     "pexels_keyword_old": "rice field Đà Nẵng vietnam flycam",
-    "pexels_keyword_v2": "canh dong da nang da nang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong da nang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "da nang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "da nang rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16433,8 +16433,8 @@
       "canh dong dak lak"
     ],
     "pexels_keyword_old": "rice field Đắk Lắk vietnam flycam",
-    "pexels_keyword_v2": "canh dong dak lak dak lak vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong dak lak vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "dak lak rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "dak lak rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16450,8 +16450,8 @@
       "canh dong dak nong"
     ],
     "pexels_keyword_old": "rice field Đắk Nông vietnam flycam",
-    "pexels_keyword_v2": "canh dong dak nong dak nong vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong dak nong vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "dak nong rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "dak nong rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16467,8 +16467,8 @@
       "canh dong dien bien"
     ],
     "pexels_keyword_old": "rice field Điện Biên vietnam flycam",
-    "pexels_keyword_v2": "canh dong dien bien dien bien vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong dien bien vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "dien bien rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "dien bien rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16484,8 +16484,8 @@
       "canh dong dong nai"
     ],
     "pexels_keyword_old": "rice field Đồng Nai vietnam flycam",
-    "pexels_keyword_v2": "canh dong dong nai dong nai vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong dong nai vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "dong nai rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "dong nai rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16501,8 +16501,8 @@
       "canh dong dong thap"
     ],
     "pexels_keyword_old": "rice field Đồng Tháp vietnam flycam",
-    "pexels_keyword_v2": "canh dong dong thap dong thap vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong dong thap vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "dong thap rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "dong thap rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16518,8 +16518,8 @@
       "canh dong gia lai"
     ],
     "pexels_keyword_old": "rice field Gia Lai vietnam flycam",
-    "pexels_keyword_v2": "canh dong gia lai gia lai vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong gia lai vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "gia lai rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "gia lai rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16535,8 +16535,8 @@
       "canh dong ha giang"
     ],
     "pexels_keyword_old": "rice field Hà Giang vietnam flycam",
-    "pexels_keyword_v2": "canh dong ha giang ha giang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ha giang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ha giang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ha giang rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16552,8 +16552,8 @@
       "canh dong ha nam"
     ],
     "pexels_keyword_old": "rice field Hà Nam vietnam flycam",
-    "pexels_keyword_v2": "canh dong ha nam ha nam vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ha nam vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ha nam rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ha nam rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16569,8 +16569,8 @@
       "canh dong ha noi"
     ],
     "pexels_keyword_old": "rice field Hà Nội vietnam flycam",
-    "pexels_keyword_v2": "canh dong ha noi ha noi vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ha noi vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ha noi rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ha noi rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16586,8 +16586,8 @@
       "canh dong ha tinh"
     ],
     "pexels_keyword_old": "rice field Hà Tĩnh vietnam flycam",
-    "pexels_keyword_v2": "canh dong ha tinh ha tinh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ha tinh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ha tinh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ha tinh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16603,8 +16603,8 @@
       "canh dong hai duong"
     ],
     "pexels_keyword_old": "rice field Hải Dương vietnam flycam",
-    "pexels_keyword_v2": "canh dong hai duong hai duong vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong hai duong vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "hai duong rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "hai duong rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16620,8 +16620,8 @@
       "canh dong hai phong"
     ],
     "pexels_keyword_old": "rice field Hải Phòng vietnam flycam",
-    "pexels_keyword_v2": "canh dong hai phong hai phong vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong hai phong vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "hai phong rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "hai phong rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16637,8 +16637,8 @@
       "canh dong hau giang"
     ],
     "pexels_keyword_old": "rice field Hậu Giang vietnam flycam",
-    "pexels_keyword_v2": "canh dong hau giang hau giang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong hau giang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "hau giang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "hau giang rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16654,8 +16654,8 @@
       "canh dong hoa binh"
     ],
     "pexels_keyword_old": "rice field Hòa Bình vietnam flycam",
-    "pexels_keyword_v2": "canh dong hoa binh hoa binh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong hoa binh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "hoa binh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "hoa binh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16671,8 +16671,8 @@
       "canh dong hung yen"
     ],
     "pexels_keyword_old": "rice field Hưng Yên vietnam flycam",
-    "pexels_keyword_v2": "canh dong hung yen hung yen vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong hung yen vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "hung yen rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "hung yen rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16688,8 +16688,8 @@
       "canh dong khanh hoa"
     ],
     "pexels_keyword_old": "rice field Khánh Hòa vietnam flycam",
-    "pexels_keyword_v2": "canh dong khanh hoa khanh hoa vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong khanh hoa vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "khanh hoa rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "khanh hoa rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16705,8 +16705,8 @@
       "canh dong kien giang"
     ],
     "pexels_keyword_old": "rice field Kiên Giang vietnam flycam",
-    "pexels_keyword_v2": "canh dong kien giang kien giang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong kien giang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "kien giang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "kien giang rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16722,8 +16722,8 @@
       "canh dong kon tum"
     ],
     "pexels_keyword_old": "rice field Kon Tum vietnam flycam",
-    "pexels_keyword_v2": "canh dong kon tum kon tum vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong kon tum vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "kon tum rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "kon tum rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16739,8 +16739,8 @@
       "canh dong lai chau"
     ],
     "pexels_keyword_old": "rice field Lai Châu vietnam flycam",
-    "pexels_keyword_v2": "canh dong lai chau lai chau vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong lai chau vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "lai chau rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "lai chau rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16756,8 +16756,8 @@
       "canh dong lam dong"
     ],
     "pexels_keyword_old": "rice field Lâm Đồng vietnam flycam",
-    "pexels_keyword_v2": "canh dong lam dong lam dong vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong lam dong vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "lam dong rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "lam dong rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16773,8 +16773,8 @@
       "canh dong lang son"
     ],
     "pexels_keyword_old": "rice field Lạng Sơn vietnam flycam",
-    "pexels_keyword_v2": "canh dong lang son lang son vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong lang son vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "lang son rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "lang son rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16790,8 +16790,8 @@
       "canh dong lao cai"
     ],
     "pexels_keyword_old": "rice field Lào Cai vietnam flycam",
-    "pexels_keyword_v2": "canh dong lao cai lao cai vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong lao cai vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "lao cai rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "lao cai rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16807,8 +16807,8 @@
       "canh dong long an"
     ],
     "pexels_keyword_old": "rice field Long An vietnam flycam",
-    "pexels_keyword_v2": "canh dong long an long an vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong long an vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "long an rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "long an rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16824,8 +16824,8 @@
       "canh dong nam dinh"
     ],
     "pexels_keyword_old": "rice field Nam Định vietnam flycam",
-    "pexels_keyword_v2": "canh dong nam dinh nam dinh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong nam dinh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "nam dinh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "nam dinh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16841,8 +16841,8 @@
       "canh dong nghe an"
     ],
     "pexels_keyword_old": "rice field Nghệ An vietnam flycam",
-    "pexels_keyword_v2": "canh dong nghe an nghe an vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong nghe an vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "nghe an rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "nghe an rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16858,8 +16858,8 @@
       "canh dong ninh binh"
     ],
     "pexels_keyword_old": "rice field Ninh Bình vietnam flycam",
-    "pexels_keyword_v2": "canh dong ninh binh ninh binh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ninh binh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ninh binh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ninh binh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16875,8 +16875,8 @@
       "canh dong ninh thuan"
     ],
     "pexels_keyword_old": "rice field Ninh Thuận vietnam flycam",
-    "pexels_keyword_v2": "canh dong ninh thuan ninh thuan vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong ninh thuan vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "ninh thuan rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "ninh thuan rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16892,8 +16892,8 @@
       "canh dong phu tho"
     ],
     "pexels_keyword_old": "rice field Phú Thọ vietnam flycam",
-    "pexels_keyword_v2": "canh dong phu tho phu tho vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong phu tho vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "phu tho rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "phu tho rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16909,8 +16909,8 @@
       "canh dong phu yen"
     ],
     "pexels_keyword_old": "rice field Phú Yên vietnam flycam",
-    "pexels_keyword_v2": "canh dong phu yen phu yen vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong phu yen vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "phu yen rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "phu yen rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16926,8 +16926,8 @@
       "canh dong quang binh"
     ],
     "pexels_keyword_old": "rice field Quảng Bình vietnam flycam",
-    "pexels_keyword_v2": "canh dong quang binh quang binh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong quang binh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "quang binh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "quang binh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16943,8 +16943,8 @@
       "canh dong quang nam"
     ],
     "pexels_keyword_old": "rice field Quảng Nam vietnam flycam",
-    "pexels_keyword_v2": "canh dong quang nam quang nam vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong quang nam vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "quang nam rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "quang nam rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16960,8 +16960,8 @@
       "canh dong quang ngai"
     ],
     "pexels_keyword_old": "rice field Quảng Ngãi vietnam flycam",
-    "pexels_keyword_v2": "canh dong quang ngai quang ngai vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong quang ngai vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "quang ngai rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "quang ngai rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16977,8 +16977,8 @@
       "canh dong quang ninh"
     ],
     "pexels_keyword_old": "rice field Quảng Ninh vietnam flycam",
-    "pexels_keyword_v2": "canh dong quang ninh quang ninh vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong quang ninh vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "quang ninh rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "quang ninh rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -16994,8 +16994,8 @@
       "canh dong quang tri"
     ],
     "pexels_keyword_old": "rice field Quảng Trị vietnam flycam",
-    "pexels_keyword_v2": "canh dong quang tri quang tri vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong quang tri vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "quang tri rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "quang tri rice field terraces vietnam aerial",
     "search_tier": "easy"
   },
   {
@@ -17011,8 +17011,8 @@
       "canh dong soc trang"
     ],
     "pexels_keyword_old": "rice field Sóc Trăng vietnam flycam",
-    "pexels_keyword_v2": "canh dong soc trang soc trang vietnam rice terraces aerial vietnam",
-    "pixabay_keyword": "canh dong soc trang vietnam rice terraces aerial vietnam",
+    "pexels_keyword_v2": "soc trang rice terraces paddy field vietnam aerial",
+    "pixabay_keyword": "soc trang rice field terraces vietnam aerial",
     "search_tier": "easy"
   }
 ]
